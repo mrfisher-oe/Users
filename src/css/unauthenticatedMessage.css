@@ -1,0 +1,16 @@
+.unauthenticated-message {
+  display: flex;
+  justify-content: center;
+  gap: .5rem;
+  font-size: 2rem;
+  margin-top: 1rem;
+
+  .unauthenticated-message__icon {
+    line-height: 1.5;
+    color: var(--red);
+  }
+
+  .unauthenticated-message__text {
+    font-weight: 700;
+  }
+}
