@@ -1,6 +1,6 @@
-# Template for Orbis Education React Applications
+# Users
 
-This repository contains the React Application Template 2023 developed in React using React Hooks.
+This repository contains the Users React application created to administer user data and authentication developed in React using React Hooks.
 
 
 # .env
