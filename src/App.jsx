@@ -51,7 +51,7 @@ const App = (props) => {
   // const [loginStatus, setLoginStatus] = useState("");
   // const [stopProcessing, setStopProcessing] = useState(false);
 
-  let applicationName = "React Azure Authentication Applications Template";
+  let applicationName = "Users";
 
   const baseURL = resolveBaseURL("project", environmentMode, demonstrationMode, false);
 
