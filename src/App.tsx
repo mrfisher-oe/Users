@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { /* AuthenticatedTemplate, UnauthenticatedTemplate, */ useIsAuthenticated, useMsal } from "@azure/msal-react";
 import { InteractionStatus } from "@azure/msal-browser";
 // import { msalInstance } from "./index";
@@ -7,7 +7,20 @@ import { AlertPopup, CheckboxGroup, FormDropdown, FormInput, FormRadioGroup, Foo
 import { isEmpty, getDateTime, isNonEmptyArray, getFirstItem, convertSpecialCharacters, convertNullEmptyString, isWholeNumber, formatTrim, getQueryStringData, addLog, addErrorLog, addComputerLog, parse, isLocalDevelopment, showDevelopment, showPlayground, allowLogging, resolveBaseURL, resolveRedirectURL } from "shared-functions";
 import { setFetchAuthorization /* , callMsGraph */ } from "./utilities/ApplicationFunctions";
 
-const App = (props) => {
+type InlineErrors = {
+  txtUsername: string;
+  txtPassword: string;
+  ddAccountType: string;
+  cbxUserPermissions: { userPermissionID: number, userPermission: string }[];
+  rdoActive: string;
+} | null;
+
+type AppProps = {
+  applicationVersion: string;
+  copyrightYear: string;
+}
+
+const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps) => {
 
   // * Available props: -- 04/29/2022 MF
   // * Properties: applicationVersion, copyrightYear -- 04/29/2022 MF
@@ -17,33 +30,36 @@ const App = (props) => {
   const isAuthenticated = useIsAuthenticated();
   const { inProgress, instance } = useMsal();
 
-  let applicationVersion = isEmpty(props) === false && isEmpty(props.applicationVersion) === false ? props.applicationVersion : "0.0.0";
-  let copyrightYear = isEmpty(props) === false && isEmpty(props.copyrightYear) === false ? props.copyrightYear : 2024;
-
-  const [url1Loaded, setURL1Loaded] = useState(false);
-  const [url2Loaded, setURL2Loaded] = useState(false);
+  const [url1Loaded, setURL1Loaded] = useState<boolean>(false);
+  const [url2Loaded, setURL2Loaded] = useState<boolean>(false);
   const [browserData, setBrowserData] = useState({});
   const [computerLog1, setComputerLog1] = useState({});
   const [computerLog2, setComputerLog2] = useState({});
-  const [locationLogged, setLocationLogged] = useState(false);
+  const [locationLogged, setLocationLogged] = useState<boolean>(false);
   const [databaseAvailable, setDatabaseAvailable] = useState(true);
   const [computerLog, setComputerLog] = useState({});
   const [userIdentifier, setUserIdentifier] = useState("");
 
   const [parametersURL, setParametersURL] = useState("");
   const [environmentMode, setEnvironmentMode] = useState("");
-  const [demonstrationMode, setDemonstrationMode] = useState("");
+  const [demonstrationMode, setDemonstrationMode] = useState<boolean>(false);
 
   const [alertItem, setAlertItem] = useState("");
   const [alertType, setAlertType] = useState("");
-  const [inlineErrors, setInlineErrors] = useState({});
+  const [inlineErrors, setInlineErrors] = useState<InlineErrors>({
+    txtUsername: "",
+    txtPassword: "",
+    ddAccountType: "",
+    cbxUserPermissions: [],
+    rdoActive: "",
+  });
 
   const [currentUser, setCurrentUser] = useState({});
   const [txtUsername, setTxtUsername] = useState("");
   const [txtPassword, setTxtPassword] = useState("");
   const [ddAccountType, setDdAccountType] = useState("");
   const [cbxUserPermissions, setCbxUserPermissions] = useState([]);
-  const [rdoActive, setRdoActive] = useState(false);
+  const [rdoActive, setRdoActive] = useState<string>("");
 
   const [isFormOpen, setIsFormOpen] = useState(false);
 
@@ -271,7 +287,7 @@ const App = (props) => {
 
         setInlineErrors({
           ...inlineErrors,
-          cbxUserPermissions: ""
+          cbxUserPermissions: []
         });
 
       };
@@ -317,8 +333,8 @@ const App = (props) => {
     setUserIdentifier(userIdentifier);
 
     let url = `${baseURL}computerLogs/`;
-    let response = "";
-    let data = "";
+    let response;
+    let data = { transactionSuccess: false, message: "", records: [] };
     let operation = "Update Computer Log";
 
     let recordObject = {};
@@ -576,7 +592,7 @@ const App = (props) => {
 
       if (isEmpty(inlineErrorMessages) === false) {
 
-        setInlineErrors(inlineErrorMessages);
+        setInlineErrors(inlineErrorMessages as InlineErrors);
         transactionValid = false;
 
       };
@@ -696,7 +712,7 @@ const App = (props) => {
 
 
   return (
-    <React.Fragment>
+    <>
 
       <Header applicationName={applicationName} />
 
@@ -822,9 +838,9 @@ const App = (props) => {
 
                 <button type="button" className="btn btn-primary" onClick={(event) => { saveRecord(); }}>Log In</button>
 
-                <button type="button" className="btn btn-info" onClick={(event) => { setTxtUsername(""); setTxtPassword(""); setDdAccountType(""); setCbxUserPermissions([]); setRdoActive(""); setInlineErrors({}); setAlertItem(""); setAlertType(""); }}>Reset</button>
+                <button type="button" className="btn btn-info" onClick={(event) => { setTxtUsername(""); setTxtPassword(""); setDdAccountType(""); setCbxUserPermissions([]); setRdoActive(""); setInlineErrors(null); setAlertItem(""); setAlertType(""); }}>Reset</button>
 
-                <button type="button" className="btn btn-outline" onClick={(event) => { setCurrentUser({}); setIsFormOpen(false); setInlineErrors({}); setAlertItem(""); setAlertType(""); }}>Cancel</button>
+                <button type="button" className="btn btn-outline" onClick={(event) => { setCurrentUser({}); setIsFormOpen(false); setInlineErrors(null); setAlertItem(""); setAlertType(""); }}>Cancel</button>
 
                 <button type="button" className="btn btn-danger" onClick={(event) => { deleteRecord(); }}>Delete</button>
 
@@ -840,7 +856,7 @@ const App = (props) => {
 
       </main>
 
-    </React.Fragment>
+    </>
   );
 };
 

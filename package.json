@@ -15,6 +15,7 @@
     "start": "vite --open",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
+    "typecheck": "tsc -b --pretty",
     "lint": "eslint --max-warnings=0 src"
   },
   "dependencies": {
@@ -32,13 +33,16 @@
     "shared-functions": "github:orbis-education/shared-functions"
   },
   "devDependencies": {
-    "@types/react": "19.1.12",
-    "@types/react-dom": "19.1.9",
+    "@types/react": "^19.1.12",
+    "@types/react-dom": "^19.1.9",
+    "@typescript-eslint/eslint-plugin": "^8.42.0",
+    "@typescript-eslint/parser": "^8.42.0",
     "@vitejs/plugin-react": "^5.0.2",
-    "eslint": "8.57.0",
+    "eslint": "^8.57.0",
     "eslint-config-react-app": "^7.0.1",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
+    "typescript": "^5.9.2",
     "vite": "^7.1.4",
     "vite-plugin-eslint": "^1.8.1"
   },
