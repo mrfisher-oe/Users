@@ -5,7 +5,7 @@ import { InteractionStatus } from "@azure/msal-browser";
 import { loginRequest } from "./utilities/authenticationConfig";
 import { AlertPopup, CheckboxGroup, FormDropdown, FormInput, FormRadioGroup, Footer, Header } from "shared-components";
 import { isEmpty, getDateTime, isNonEmptyArray, getFirstItem, convertSpecialCharacters, convertNullEmptyString, isWholeNumber, formatTrim, getQueryStringData, addLog, addErrorLog, addComputerLog, parse, isLocalDevelopment, showDevelopment, showPlayground, allowLogging, resolveBaseURL, resolveRedirectURL } from "shared-functions";
-import { setFetchAuthorization /* , callMsGraph */ } from "./utilities/ApplicationFunctions";
+import { setFetchAuthorization /* , callMsGraph */ } from "./utilities/applicationFunctions";
 
 const App = (props) => {
 
