@@ -29,6 +29,7 @@
     "postcss-preset-env": "^10.3.1",
     "react": "19.1.1",
     "react-dom": "19.1.1",
+    "react-redux": "^9.2.0",
     "shared-components": "github:orbis-education/shared-components",
     "shared-functions": "github:orbis-education/shared-functions"
   },
@@ -38,7 +39,7 @@
     "@typescript-eslint/eslint-plugin": "^8.42.0",
     "@typescript-eslint/parser": "^8.42.0",
     "@vitejs/plugin-react": "^5.0.2",
-    "eslint": "^8.57.0",
+    "eslint": "8.57.0",
     "eslint-config-react-app": "^7.0.1",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
