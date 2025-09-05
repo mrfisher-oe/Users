@@ -748,16 +748,6 @@ const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps)
 
         {/* // * From https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/samples/msal-react-samples/react-router-sample -- 09/13/2024 MF */}
 
-        {isAuthenticated === true ?
-
-          <div className="flex-row justify-end">
-
-            <button type="submit" className="btn btn-primary" onClick={(event) => { event.preventDefault(); instance.logoutRedirect({ postLogoutRedirectUri: redirectURL }); }}>Log Out</button>
-
-          </div>
-
-          : null}
-
 
         {isAuthenticated === false && inProgress !== InteractionStatus.Startup && inProgress !== InteractionStatus.HandleRedirect ?
 
