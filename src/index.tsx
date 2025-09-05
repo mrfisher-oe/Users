@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { PublicClientApplication, EventType } from "@azure/msal-browser";
+import { PublicClientApplication, EventType, EventMessage, AuthenticationResult } from "@azure/msal-browser";
 import { MsalProvider } from "@azure/msal-react";
 import { msalConfig } from "./utilities/authenticationConfig";
 import App from "./App";
@@ -31,12 +31,14 @@ msalInstance.initialize().then(() => {
   // * Optional - This will update account state if a user signs in from another tab or window
   msalInstance.enableAccountStorageEvents();
 
-  msalInstance.addEventCallback((event) => {
+  msalInstance.addEventCallback((event: EventMessage) => {
 
-    if (event.eventType === EventType.LOGIN_SUCCESS && event.payload.account) {
+    if (event.eventType === EventType.LOGIN_SUCCESS) {
+      const result = event.payload as AuthenticationResult;
 
-      const account = event.payload.account;
-      msalInstance.setActiveAccount(account);
+      if (result?.account) {
+        msalInstance.setActiveAccount(result.account);
+      }
 
     };
 
