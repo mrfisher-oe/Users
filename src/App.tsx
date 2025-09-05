@@ -748,7 +748,7 @@ const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps)
 
         {/* // * From https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/samples/msal-react-samples/react-router-sample -- 09/13/2024 MF */}
 
-        {/* {isAuthenticated === true ?
+        {isAuthenticated === true ?
 
           <div className="flex-row justify-end">
 
@@ -756,48 +756,8 @@ const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps)
 
           </div>
 
-          : null} */}
+          : null}
 
-        {/* // * inProgress check prevents sign-in button from being displayed briefly after returning from a redirect sign-in. Processing the server response takes a render cycle or two. */}
-        {/* {isAuthenticated === false && inProgress !== InteractionStatus.Startup && inProgress !== InteractionStatus.HandleRedirect ?
-
-          <div className="flex-row justify-center">
-
-            <button type="submit" className="btn btn-primary" onClick={(event) => {
-              event.preventDefault(); instance.loginRedirect({ ...loginRequest, redirectUri: redirectURL });
-            }}>Log In</button>
-
-          </div>
-
-          : null} */}
-
-        {/* <p>Anyone can see this paragraph.</p> */}
-
-        {/* <AuthenticatedTemplate>
-              <p>At least one account is signed in.</p>
-            </AuthenticatedTemplate>
-
-            <UnauthenticatedTemplate>
-              <p>No users are signed in.</p>
-            </UnauthenticatedTemplate> */}
-
-        {/* {isAuthenticated === true ? <p>At least one account is signed in.</p> : null} */}
-
-        {/* {isAuthenticated !== true ? <p>No users are signed in.</p> : null} */}
-
-        {/* // * Never finished getting this to work. -- 09/25/2024 MF */}
-        {/* {isAuthenticated === true ?
-
-              <React.Fragment>
-
-                <p>{jobTitle}</p>
-                <p>{mail}</p>
-                <p>{phone}</p>
-                <p>{location}</p>
-
-              </React.Fragment>
-
-              : null} */}
 
         {isAuthenticated === false && inProgress !== InteractionStatus.Startup && inProgress !== InteractionStatus.HandleRedirect ?
 
