@@ -333,7 +333,7 @@ const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps)
     setUserIdentifier(userIdentifier);
 
     let url = `${baseURL}computerLogs/`;
-    let response;
+    let response; // ! If we know the type and default value to set it to then we can assign this properly. -- 09/05/2025 JW
     let data = { transactionSuccess: false, message: "", records: [] };
     let operation = "Update Computer Log";
 
