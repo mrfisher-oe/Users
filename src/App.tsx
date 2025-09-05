@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { /* AuthenticatedTemplate, UnauthenticatedTemplate, */ useIsAuthenticated, useMsal } from "@azure/msal-react";
 import { InteractionStatus } from "@azure/msal-browser";
 import { AlertPopup, CheckboxGroup, FormDropdown, FormInput, FormRadioGroup, Footer, Header } from "shared-components";
-import { isEmpty, getDateTime, isNonEmptyArray, getFirstItem, convertSpecialCharacters, convertNullEmptyString, isWholeNumber, formatTrim, getQueryStringData, addLog, addErrorLog, addComputerLog, parse, isLocalDevelopment, showDevelopment, showPlayground, allowLogging, resolveBaseURL, resolveRedirectURL } from "shared-functions";
+import { isEmpty, getDateTime, isNonEmptyArray, formatTrim, getQueryStringData, addLog, addErrorLog, addComputerLog, parse, isLocalDevelopment, showDevelopment, showPlayground, allowLogging, resolveBaseURL, resolveRedirectURL } from "shared-functions";
 // import { msalInstance } from "./index";
 import { loginRequest } from "./utilities/authenticationConfig";
 import { setFetchAuthorization /* , callMsGraph */ } from "./utilities/applicationFunctions";
@@ -21,11 +21,6 @@ type AppProps = {
 }
 
 const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps) => {
-
-  // * Available props: -- 04/29/2022 MF
-  // * Properties: applicationVersion, copyrightYear -- 04/29/2022 MF
-
-  const componentName = "App";
 
   const isAuthenticated = useIsAuthenticated();
   const { inProgress, instance } = useMsal();
@@ -63,71 +58,11 @@ const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps)
 
   const [isFormOpen, setIsFormOpen] = useState(false);
 
-  // const [accessToken, setAccessToken] = useState("");
-  // const [loginStatus, setLoginStatus] = useState("");
-  // const [stopProcessing, setStopProcessing] = useState(false);
-
   let applicationName = "Users";
 
-  const baseURL = resolveBaseURL("project", environmentMode, demonstrationMode, false);
+  const baseURL = resolveBaseURL("user", environmentMode, demonstrationMode, false);
 
   const redirectURL = resolveRedirectURL(environmentMode, demonstrationMode);
-
-
-  // * Never finished getting this to work. -- 09/25/2024 MF
-  // useEffect(() => {
-
-  //   if (isAuthenticated === true && isEmpty(loginStatus) === true && stopProcessing === false) {
-
-  //     // let account = msalInstance.getActiveAccount();
-  //     // let accessToken = "";
-
-  //     // const response = await msalInstance.acquireTokenSilent({ ...loginRequest, account: account });
-
-  //     // accessToken = response.accessToken;
-
-  //     let accessToken = callMsGraph();
-
-  //     console.log(componentName, getDateTime(), "accessToken", accessToken);
-
-  //     if (isEmpty(accessToken) === false) {
-
-  //       setAccessToken(accessToken);
-
-  //       // loadUserProfile(accessToken);
-
-  //       // let userProfile = callMsGraph();
-
-  //       // console.log(componentName, getDateTime(), "userProfile", userProfile);
-
-  //       // setLoginStatus(userProfile);
-
-  //       // setStopProcessing(true);
-
-  //     };
-
-  //   };
-
-  // }, [isAuthenticated, loginStatus]);
-
-
-  // useEffect(() => {
-
-  //   if (isEmpty(accessToken) === false) {
-
-  //     loadUserProfile(accessToken);
-
-  //     // let userProfile = callMsGraph();
-
-  //     // console.log(componentName, getDateTime(), "userProfile", userProfile);
-
-  //     // setLoginStatus(userProfile);
-
-  //     setStopProcessing(true);
-
-  //   };
-
-  // }, [accessToken]);
 
 
   useEffect(() => {
@@ -629,86 +564,6 @@ const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps)
   const deleteRecord = () => {
 
   };
-
-
-  // * Never finished getting this to work. -- 09/25/2024 MF
-  // const loadUserProfile = (accessToken) => {
-
-  //   setAlertType("");
-  //   setAlertItem("");
-
-  //   setLoginStatus([]);
-
-  //   let url = "https://graph.microsoft.com/v1.0/me";
-  //   let response = "";
-  //   let data = "";
-  //   let operation = "Get User Profile";
-
-  //   fetch(url, {
-  //     method: "GET",
-  //     headers: new Headers({
-  //       "Content-Type": "application/json", "Authorization": `Bearer ${accessToken}`
-  //     })
-  //   })
-  //     .then(results => {
-
-  //       response = results;
-
-  //       console.log(componentName, getDateTime(), "response", response);
-
-  //       if (response.ok !== true) {
-
-  //         // throw Error(`${response.status} ${response.statusText} ${response.url}`);
-
-  //       } else {
-
-  //         if (response.status === 200) {
-
-  //           return results.json();
-
-  //         } else {
-
-  //           return response.status;
-
-  //         };
-
-  //       };
-
-  //     })
-  //     .then(results => {
-
-  //       data = results;
-
-  //       console.log(componentName, getDateTime(), "data", data);
-
-  //       if (isEmpty(data) === false) {
-
-  //         setLoginStatus(data);
-
-  //       } else {
-
-  //         // console.error(componentName, getDateTime(), operation, `${operation}: No Results Returned.`);
-
-  //         setAlertType("error");
-  //         setAlertItem(`${operation}: No Results Returned.`);
-
-  //         addErrorLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation: `${operation} SQL Server`, componentName: componentName, transactionData: { url: url, response: { ok: response.ok, redirected: response.redirected, status: response.status, statusText: response.statusText, type: response.type, url: response.url }, data: data, applicationVersion: applicationVersion, computerLog: computerLog }, errorData: { message: "No Results Returned." }, dateEntered: getDateTime() });
-
-  //       };
-
-  //     })
-  //     .catch((error) => {
-
-  //       // console.error(componentName, getDateTime(), operation, "fetchData error", error);
-
-  //       setAlertType("error");
-  //       setAlertItem(`${operation}: ${convertSpecialCharacters(error.name)}: ${convertSpecialCharacters(error.message)}`);
-
-  //       addErrorLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation: operation, userIdentifier: userIdentifier, componentName: componentName, transactionData: { applicationVersion: applicationVersion, computerLog: computerLog }, errorData: { name: error.name, message: error.message, inner: error.inner, stack: error.stack }, dateEntered: getDateTime() });
-
-  //     });
-
-  // };
 
 
   return (
