@@ -1,117 +1,68 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { /* AuthenticatedTemplate, UnauthenticatedTemplate, */ useIsAuthenticated, useMsal } from "@azure/msal-react";
 import { InteractionStatus } from "@azure/msal-browser";
+import { AlertPopup, CheckboxGroup, FormDropdown, FormInput, FormRadioGroup, Footer, Header } from "shared-components";
+import { isEmpty, getDateTime, isNonEmptyArray, formatTrim, getQueryStringData, addLog, addErrorLog, addComputerLog, parse, isLocalDevelopment, showDevelopment, showPlayground, allowLogging, resolveBaseURL, resolveRedirectURL } from "shared-functions";
 // import { msalInstance } from "./index";
 import { loginRequest } from "./utilities/authenticationConfig";
-import { AlertPopup, CheckboxGroup, FormDropdown, FormInput, FormRadioGroup, Footer, Header } from "shared-components";
-import { isEmpty, getDateTime, isNonEmptyArray, getFirstItem, convertSpecialCharacters, convertNullEmptyString, isWholeNumber, formatTrim, getQueryStringData, addLog, addErrorLog, addComputerLog, parse, isLocalDevelopment, showDevelopment, showPlayground, allowLogging, resolveBaseURL, resolveRedirectURL } from "shared-functions";
-import { setFetchAuthorization /* , callMsGraph */ } from "./utilities/ApplicationFunctions";
+import { setFetchAuthorization /* , callMsGraph */ } from "./utilities/applicationFunctions";
 
-const App = (props) => {
+type InlineErrors = {
+  txtUsername: string;
+  txtPassword: string;
+  ddAccountType: string;
+  cbxUserPermissions: { userPermissionID: number, userPermission: string }[];
+  rdoActive: string;
+} | null;
 
-  // * Available props: -- 04/29/2022 MF
-  // * Properties: applicationVersion, copyrightYear -- 04/29/2022 MF
+type AppProps = {
+  applicationVersion: string;
+  copyrightYear: string;
+}
 
-  const componentName = "App";
+const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps) => {
 
   const isAuthenticated = useIsAuthenticated();
   const { inProgress, instance } = useMsal();
 
-  let applicationVersion = isEmpty(props) === false && isEmpty(props.applicationVersion) === false ? props.applicationVersion : "0.0.0";
-  let copyrightYear = isEmpty(props) === false && isEmpty(props.copyrightYear) === false ? props.copyrightYear : 2024;
-
-  const [url1Loaded, setURL1Loaded] = useState(false);
-  const [url2Loaded, setURL2Loaded] = useState(false);
+  const [url1Loaded, setURL1Loaded] = useState<boolean>(false);
+  const [url2Loaded, setURL2Loaded] = useState<boolean>(false);
   const [browserData, setBrowserData] = useState({});
   const [computerLog1, setComputerLog1] = useState({});
   const [computerLog2, setComputerLog2] = useState({});
-  const [locationLogged, setLocationLogged] = useState(false);
+  const [locationLogged, setLocationLogged] = useState<boolean>(false);
   const [databaseAvailable, setDatabaseAvailable] = useState(true);
   const [computerLog, setComputerLog] = useState({});
   const [userIdentifier, setUserIdentifier] = useState("");
 
   const [parametersURL, setParametersURL] = useState("");
   const [environmentMode, setEnvironmentMode] = useState("");
-  const [demonstrationMode, setDemonstrationMode] = useState("");
+  const [demonstrationMode, setDemonstrationMode] = useState<boolean>(false);
 
   const [alertItem, setAlertItem] = useState("");
   const [alertType, setAlertType] = useState("");
-  const [inlineErrors, setInlineErrors] = useState({});
+  const [inlineErrors, setInlineErrors] = useState<InlineErrors>({
+    txtUsername: "",
+    txtPassword: "",
+    ddAccountType: "",
+    cbxUserPermissions: [],
+    rdoActive: "",
+  });
 
   const [currentUser, setCurrentUser] = useState({});
   const [txtUsername, setTxtUsername] = useState("");
   const [txtPassword, setTxtPassword] = useState("");
   const [ddAccountType, setDdAccountType] = useState("");
   const [cbxUserPermissions, setCbxUserPermissions] = useState([]);
-  const [rdoActive, setRdoActive] = useState(false);
+  const [rdoActive, setRdoActive] = useState<string>("");
 
   const [isFormOpen, setIsFormOpen] = useState(false);
 
-  // const [accessToken, setAccessToken] = useState("");
-  // const [loginStatus, setLoginStatus] = useState("");
-  // const [stopProcessing, setStopProcessing] = useState(false);
-
   let applicationName = "Users";
 
-  const baseURL = resolveBaseURL("project", environmentMode, demonstrationMode, false);
+  const baseURL = resolveBaseURL("user", environmentMode, demonstrationMode, false);
 
   const redirectURL = resolveRedirectURL(environmentMode, demonstrationMode);
-
-
-  // * Never finished getting this to work. -- 09/25/2024 MF
-  // useEffect(() => {
-
-  //   if (isAuthenticated === true && isEmpty(loginStatus) === true && stopProcessing === false) {
-
-  //     // let account = msalInstance.getActiveAccount();
-  //     // let accessToken = "";
-
-  //     // const response = await msalInstance.acquireTokenSilent({ ...loginRequest, account: account });
-
-  //     // accessToken = response.accessToken;
-
-  //     let accessToken = callMsGraph();
-
-  //     console.log(componentName, getDateTime(), "accessToken", accessToken);
-
-  //     if (isEmpty(accessToken) === false) {
-
-  //       setAccessToken(accessToken);
-
-  //       // loadUserProfile(accessToken);
-
-  //       // let userProfile = callMsGraph();
-
-  //       // console.log(componentName, getDateTime(), "userProfile", userProfile);
-
-  //       // setLoginStatus(userProfile);
-
-  //       // setStopProcessing(true);
-
-  //     };
-
-  //   };
-
-  // }, [isAuthenticated, loginStatus]);
-
-
-  // useEffect(() => {
-
-  //   if (isEmpty(accessToken) === false) {
-
-  //     loadUserProfile(accessToken);
-
-  //     // let userProfile = callMsGraph();
-
-  //     // console.log(componentName, getDateTime(), "userProfile", userProfile);
-
-  //     // setLoginStatus(userProfile);
-
-  //     setStopProcessing(true);
-
-  //   };
-
-  // }, [accessToken]);
 
 
   useEffect(() => {
@@ -271,7 +222,7 @@ const App = (props) => {
 
         setInlineErrors({
           ...inlineErrors,
-          cbxUserPermissions: ""
+          cbxUserPermissions: []
         });
 
       };
@@ -317,8 +268,8 @@ const App = (props) => {
     setUserIdentifier(userIdentifier);
 
     let url = `${baseURL}computerLogs/`;
-    let response = "";
-    let data = "";
+    let response; // ! If we know the type and default value to set it to then we can assign this properly. -- 09/05/2025 JW
+    let data = { transactionSuccess: false, message: "", records: [] };
     let operation = "Update Computer Log";
 
     let recordObject = {};
@@ -576,7 +527,7 @@ const App = (props) => {
 
       if (isEmpty(inlineErrorMessages) === false) {
 
-        setInlineErrors(inlineErrorMessages);
+        setInlineErrors(inlineErrorMessages as InlineErrors);
         transactionValid = false;
 
       };
@@ -615,88 +566,8 @@ const App = (props) => {
   };
 
 
-  // * Never finished getting this to work. -- 09/25/2024 MF
-  // const loadUserProfile = (accessToken) => {
-
-  //   setAlertType("");
-  //   setAlertItem("");
-
-  //   setLoginStatus([]);
-
-  //   let url = "https://graph.microsoft.com/v1.0/me";
-  //   let response = "";
-  //   let data = "";
-  //   let operation = "Get User Profile";
-
-  //   fetch(url, {
-  //     method: "GET",
-  //     headers: new Headers({
-  //       "Content-Type": "application/json", "Authorization": `Bearer ${accessToken}`
-  //     })
-  //   })
-  //     .then(results => {
-
-  //       response = results;
-
-  //       console.log(componentName, getDateTime(), "response", response);
-
-  //       if (response.ok !== true) {
-
-  //         // throw Error(`${response.status} ${response.statusText} ${response.url}`);
-
-  //       } else {
-
-  //         if (response.status === 200) {
-
-  //           return results.json();
-
-  //         } else {
-
-  //           return response.status;
-
-  //         };
-
-  //       };
-
-  //     })
-  //     .then(results => {
-
-  //       data = results;
-
-  //       console.log(componentName, getDateTime(), "data", data);
-
-  //       if (isEmpty(data) === false) {
-
-  //         setLoginStatus(data);
-
-  //       } else {
-
-  //         // console.error(componentName, getDateTime(), operation, `${operation}: No Results Returned.`);
-
-  //         setAlertType("error");
-  //         setAlertItem(`${operation}: No Results Returned.`);
-
-  //         addErrorLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation: `${operation} SQL Server`, componentName: componentName, transactionData: { url: url, response: { ok: response.ok, redirected: response.redirected, status: response.status, statusText: response.statusText, type: response.type, url: response.url }, data: data, applicationVersion: applicationVersion, computerLog: computerLog }, errorData: { message: "No Results Returned." }, dateEntered: getDateTime() });
-
-  //       };
-
-  //     })
-  //     .catch((error) => {
-
-  //       // console.error(componentName, getDateTime(), operation, "fetchData error", error);
-
-  //       setAlertType("error");
-  //       setAlertItem(`${operation}: ${convertSpecialCharacters(error.name)}: ${convertSpecialCharacters(error.message)}`);
-
-  //       addErrorLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation: operation, userIdentifier: userIdentifier, componentName: componentName, transactionData: { applicationVersion: applicationVersion, computerLog: computerLog }, errorData: { name: error.name, message: error.message, inner: error.inner, stack: error.stack }, dateEntered: getDateTime() });
-
-  //     });
-
-  // };
-
-
   return (
-    <React.Fragment>
+    <>
 
       <Header applicationName={applicationName} />
 
@@ -732,56 +603,6 @@ const App = (props) => {
 
         {/* // * From https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/samples/msal-react-samples/react-router-sample -- 09/13/2024 MF */}
 
-        {/* {isAuthenticated === true ?
-
-          <div className="flex-row justify-end">
-
-            <button type="submit" className="btn btn-primary" onClick={(event) => { event.preventDefault(); instance.logoutRedirect({ postLogoutRedirectUri: redirectURL }); }}>Log Out</button>
-
-          </div>
-
-          : null} */}
-
-        {/* // * inProgress check prevents sign-in button from being displayed briefly after returning from a redirect sign-in. Processing the server response takes a render cycle or two. */}
-        {/* {isAuthenticated === false && inProgress !== InteractionStatus.Startup && inProgress !== InteractionStatus.HandleRedirect ?
-
-          <div className="flex-row justify-center">
-
-            <button type="submit" className="btn btn-primary" onClick={(event) => {
-              event.preventDefault(); instance.loginRedirect({ ...loginRequest, redirectUri: redirectURL });
-            }}>Log In</button>
-
-          </div>
-
-          : null} */}
-
-        {/* <p>Anyone can see this paragraph.</p> */}
-
-        {/* <AuthenticatedTemplate>
-              <p>At least one account is signed in.</p>
-            </AuthenticatedTemplate>
-
-            <UnauthenticatedTemplate>
-              <p>No users are signed in.</p>
-            </UnauthenticatedTemplate> */}
-
-        {/* {isAuthenticated === true ? <p>At least one account is signed in.</p> : null} */}
-
-        {/* {isAuthenticated !== true ? <p>No users are signed in.</p> : null} */}
-
-        {/* // * Never finished getting this to work. -- 09/25/2024 MF */}
-        {/* {isAuthenticated === true ?
-
-              <React.Fragment>
-
-                <p>{jobTitle}</p>
-                <p>{mail}</p>
-                <p>{phone}</p>
-                <p>{location}</p>
-
-              </React.Fragment>
-
-              : null} */}
 
         {isAuthenticated === false && inProgress !== InteractionStatus.Startup && inProgress !== InteractionStatus.HandleRedirect ?
 
@@ -822,9 +643,9 @@ const App = (props) => {
 
                 <button type="button" className="btn btn-primary" onClick={(event) => { saveRecord(); }}>Log In</button>
 
-                <button type="button" className="btn btn-info" onClick={(event) => { setTxtUsername(""); setTxtPassword(""); setDdAccountType(""); setCbxUserPermissions([]); setRdoActive(""); setInlineErrors({}); setAlertItem(""); setAlertType(""); }}>Reset</button>
+                <button type="button" className="btn btn-info" onClick={(event) => { setTxtUsername(""); setTxtPassword(""); setDdAccountType(""); setCbxUserPermissions([]); setRdoActive(""); setInlineErrors(null); setAlertItem(""); setAlertType(""); }}>Reset</button>
 
-                <button type="button" className="btn btn-outline" onClick={(event) => { setCurrentUser({}); setIsFormOpen(false); setInlineErrors({}); setAlertItem(""); setAlertType(""); }}>Cancel</button>
+                <button type="button" className="btn btn-outline" onClick={(event) => { setCurrentUser({}); setIsFormOpen(false); setInlineErrors(null); setAlertItem(""); setAlertType(""); }}>Cancel</button>
 
                 <button type="button" className="btn btn-danger" onClick={(event) => { deleteRecord(); }}>Delete</button>
 
@@ -840,7 +661,7 @@ const App = (props) => {
 
       </main>
 
-    </React.Fragment>
+    </>
   );
 };
 
