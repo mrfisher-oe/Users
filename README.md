@@ -1,6 +1,6 @@
 # Users
 
-This repository contains the Users React application created to administer user data and authentication developed in React using React Hooks.
+This repository contains the Users React + TypeScript application created to administer user data and authentication developed in React using React Hooks.
 
 
 # .env
