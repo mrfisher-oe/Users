@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { /* AuthenticatedTemplate, UnauthenticatedTemplate, */ useIsAuthenticated, useMsal } from "@azure/msal-react";
 import { InteractionStatus } from "@azure/msal-browser";
 import { AlertPopup, CheckboxGroup, FormDropdown, FormInput, FormRadioGroup, Footer, Header } from "shared-components";
-import { isEmpty, getDateTime, isNonEmptyArray, formatTrim, getQueryStringData, addLog, addErrorLog, addComputerLog, parse, isLocalDevelopment, showDevelopment, showPlayground, allowLogging, resolveBaseURL, resolveRedirectURL } from "shared-functions";
+import { isEmpty, getDateTime, isNonEmptyArray, formatTrim, getQueryStringData, addLog, addErrorLog, addComputerLog, parse, isLocalDevelopment, showDevelopment, showPlayground, showAuthentication, allowLogging, resolveBaseURL, resolveRedirectURL } from "shared-functions";
 // import { msalInstance } from "./index";
 import { loginRequest } from "./utilities/authenticationConfig";
 import { setFetchAuthorization /* , callMsGraph */ } from "./utilities/applicationFunctions";
@@ -576,7 +576,7 @@ const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps)
         <nav className="sub-header-nav">
           <ul>
 
-            {/* {isAuthenticated === false && inProgress !== InteractionStatus.Startup && inProgress !== InteractionStatus.HandleRedirect ?
+            {/* {isAuthenticated === false && inProgress !== InteractionStatus.Startup && inProgress !== InteractionStatus.HandleRedirect && showAuthentication() ?
 
               <li><a href="#" onClick={(event) => { event.preventDefault(); instance.loginRedirect({ ...loginRequest, redirectUri: redirectURL }); }}>Log In</a></li>
 
@@ -603,7 +603,7 @@ const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps)
 
         {/* // * From https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/samples/msal-react-samples/react-router-sample -- 09/13/2024 MF */}
 
-        {isAuthenticated === false && inProgress !== InteractionStatus.Startup && inProgress !== InteractionStatus.HandleRedirect ?
+        {isAuthenticated === false && inProgress !== InteractionStatus.Startup && inProgress !== InteractionStatus.HandleRedirect && showAuthentication() ?
 
           <section className="section-block">
 
