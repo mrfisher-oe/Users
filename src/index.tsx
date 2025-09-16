@@ -1,5 +1,7 @@
-import { StrictMode } from "react"
-import { createRoot } from "react-dom/client"
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { Provider } from "react-redux";
+import store from "./app/store";
 import { PublicClientApplication, EventType, EventMessage, AuthenticationResult } from "@azure/msal-browser";
 import { MsalProvider } from "@azure/msal-react";
 import { msalConfig } from "./utilities/authenticationConfig";
@@ -46,7 +48,9 @@ msalInstance.initialize().then(() => {
   root.render(
     <StrictMode>
       <MsalProvider instance={msalInstance}>
-        <App applicationVersion={version} copyrightYear={copyrightYear} />
+        <Provider store={store}>
+          <App applicationVersion={version} copyrightYear={copyrightYear} />
+        </Provider>
       </MsalProvider>
     </StrictMode>
   );
