@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "../app/hooks";
 import { DialogBoxConfirmation, FormDropdown, FormInput, SortableColumnHeader, useDialogBoxConfirmation, NoResultsText } from "shared-components";
-import { emailFormat, isEmpty, getDateTime, isNonEmptyArray, getFirstItem, displayValue, displayDateAndTime, sortObjectArrayByProperty, convertSpecialCharacters, convertNullEmptyString, formatTrim, formatToString, formatLowerCase, formatDate, formatSearchInput, addLog, addErrorLog, allowLogging } from "shared-functions";
+import { emailFormat, isEmpty, isEmptyArray, getDateTime, isNonEmptyArray, getFirstItem, displayValue, displayDateAndTime, sortObjectArrayByProperty, convertSpecialCharacters, convertNullEmptyString, formatTrim, formatToString, formatLowerCase, formatDate, formatSearchInput, addLog, addErrorLog, allowLogging } from "shared-functions";
 import { sessionTokenName, setFetchAuthorization } from "../utilities/applicationFunctions";
 import { setDatabaseAvailable, setUserTokenExpired } from "../app/applicationSettingsSlice";
 import { setComponentToLoad, setIsFormOpen, addSuccessMessage, addErrorMessage, clearMessages } from "../app/activitySlice";
@@ -197,7 +197,7 @@ const Users = () => {
 
     if (!isEmpty(inlineErrors)) {
 
-      if (!isEmpty(inlineErrors.txtUsername) && !isEmpty(txtUsername)) {
+      if (!isEmpty(inlineErrors.txtUsername) && !isEmpty(txtUsername) && !checkIsDuplicateUsername(txtUsername)) {
 
         setInlineErrors({
           ...inlineErrors,
@@ -463,6 +463,15 @@ const Users = () => {
   };
 
 
+  const checkIsDuplicateUsername = (username) => {
+
+    let duplicateUsernameFilter = users.filter((user) => formatLowerCase(user.username) === formatLowerCase(username));
+
+    return !isEmptyArray(duplicateUsernameFilter);
+
+  };
+
+
   const saveRecord = () => {
 
     // window.scrollTo(0, 0);
@@ -491,6 +500,16 @@ const Users = () => {
       inlineErrorMessages = {
         ...inlineErrorMessages,
         txtUsername: "Please enter the <strong>Username</strong>."
+      };
+
+    } else if (formatTrim(txtUsername) !== currentUser?.username && checkIsDuplicateUsername(formatTrim(txtUsername))) {
+
+      // * Make sure that the user's Username is unique. -- 06/24/2021 MF
+      // errorMessages = `${errorMessages}, <strong>Username</strong>`;
+
+      inlineErrorMessages = {
+        ...inlineErrorMessages,
+        txtUsername: "A user with this username already exists. Please enter a different <strong>Username</strong>."
       };
 
     };
