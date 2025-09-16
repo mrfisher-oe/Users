@@ -81,7 +81,7 @@ const Navigation = () => {
     <nav className="sub-header-nav">
       <ul>
 
-        <li>
+        {/* <li>
           <button
             type="button"
             onClick={() => { setIsDropdownOpen(!isDropdownOpen); }}
@@ -107,18 +107,7 @@ const Navigation = () => {
 
             : null}
 
-        </li>
-
-        <li>
-          <button
-            type="button"
-            role="link"
-            className={returnActiveClass("NavLink", "")}
-            onClick={() => { window.scrollTo(0, 0); dispatch(setComponentToLoad("")); }}
-          >
-            Nav Link
-          </button>
-        </li>
+        </li> */}
 
         {isEmpty(loggedInUser) ?
 
@@ -138,6 +127,17 @@ const Navigation = () => {
         {!isEmpty(loggedInUser) ?
 
           <>
+
+            <li>
+              <button
+                type="button"
+                role="link"
+                className={returnActiveClass("Users", "")}
+                onClick={() => { window.scrollTo(0, 0); dispatch(setComponentToLoad("Users")); }}
+              >
+                Users
+              </button>
+            </li>
 
             <li>
               <button

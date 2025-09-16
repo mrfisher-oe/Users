@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
-import store from "./app/store";
+import { store } from "./app/store";
 import { PublicClientApplication, EventType, EventMessage, AuthenticationResult } from "@azure/msal-browser";
 import { MsalProvider } from "@azure/msal-react";
 import { msalConfig } from "./utilities/authenticationConfig";

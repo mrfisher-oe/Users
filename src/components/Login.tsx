@@ -12,7 +12,11 @@ type InlineErrors = {
   txtPassword: string;
 } | null;
 
-const Login = ({ invalidURL }) => {
+type LoginProps = {
+  invalidURL?: boolean | null;
+} | null;
+
+const Login = ({ invalidURL }: LoginProps) => {
 
   const dispatch = useAppDispatch();
 

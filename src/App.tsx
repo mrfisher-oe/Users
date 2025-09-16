@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useAppSelector, useAppDispatch } from "./app/hooks";
 import { /* AuthenticatedTemplate, UnauthenticatedTemplate, */ useIsAuthenticated, useMsal } from "@azure/msal-react";
 import { InteractionStatus } from "@azure/msal-browser";
 import { AlertPopup, CheckboxGroup, FormDropdown, FormInput, FormRadioGroup, Footer, Header } from "shared-components";
@@ -6,21 +7,29 @@ import { isEmpty, getDateTime, isNonEmptyArray, formatTrim, getQueryStringData, 
 // import { msalInstance } from "./index";
 import { loginRequest } from "./utilities/authenticationConfig";
 import { setFetchAuthorization /* , callMsGraph */ } from "./utilities/applicationFunctions";
+import Navigation from "./components/Navigation";
+import type { RootState } from './app/store';
+import Login from "./components/Login";
+import Profile from "./components/Profile";
+import Messages from "./components/Messages";
+import Users from "./components/Users";
 
 type InlineErrors = {
   txtUsername: string;
   txtPassword: string;
   ddAccountType: string;
-  cbxUserPermissions: { userPermissionID: number, userPermission: string }[];
+  cbxUserPermissions: { userPermissionID: number, userPermission: string; }[];
   rdoActive: string;
 } | null;
 
 type AppProps = {
   applicationVersion: string;
   copyrightYear: string;
-}
+};
 
 const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps) => {
+
+  const componentToLoad = useAppSelector((state: RootState) => state.activity.componentToLoad);
 
   const isAuthenticated = useIsAuthenticated();
   const { inProgress, instance } = useMsal();
@@ -57,6 +66,8 @@ const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps)
   const [rdoActive, setRdoActive] = useState<string>("");
 
   const [isFormOpen, setIsFormOpen] = useState(false);
+
+  const [invalidURL, setInvalidURL] = useState<boolean | null>(null);
 
   let applicationName = "Users";
 
@@ -571,27 +582,10 @@ const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps)
 
       <Header applicationName={applicationName} />
 
-      {isAuthenticated === true ?
+      {/* {isAuthenticated === true ? <Navigation /> : null} */}
+      <Navigation />
 
-        <nav className="sub-header-nav">
-          <ul>
-
-            {/* {isAuthenticated === false && inProgress !== InteractionStatus.Startup && inProgress !== InteractionStatus.HandleRedirect && showAuthentication() ?
-
-              <li><a href="#" onClick={(event) => { event.preventDefault(); instance.loginRedirect({ ...loginRequest, redirectUri: redirectURL }); }}>Log In</a></li>
-
-              : null} */}
-
-            {isAuthenticated === true ?
-
-              <li><a href="#" onClick={(event) => { event.preventDefault(); instance.logoutRedirect({ postLogoutRedirectUri: redirectURL }); }}>Log Out</a></li>
-
-              : null}
-
-          </ul>
-        </nav>
-
-        : null}
+      <Messages />
 
       <main>
 
@@ -620,7 +614,8 @@ const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps)
 
           : null}
 
-        {isAuthenticated === true ?
+        {/* // ? Is this still needed? -- 09/15/2025 JH  */}
+        {/* {isAuthenticated === true ?
 
           <section className="section-block">
 
@@ -654,7 +649,13 @@ const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps)
 
           </section>
 
-          : null}
+          : null} */}
+
+        <Login invalidURL={invalidURL} />
+
+        {componentToLoad === "Profile" ? <Profile /> : null}
+
+        {componentToLoad === "Users" ? <Users /> : null}
 
         <Footer copyrightYear={copyrightYear} applicationVersion={applicationVersion} />
 
