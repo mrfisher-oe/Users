@@ -1,31 +1,32 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from '@reduxjs/toolkit';
 
-interface ApplicationSettingsTypes {
-  applicationVersion: string,
-  copyrightYear: string,
-  applicationName: string,
-  // databaseNameProduction: string,
-  // databaseNameDevelopment: string,
-  baseURL: string,
-  baseURLApplied: boolean,
-  browserData: object,
-  computerLog: object,
-  userIdentifier: string,
-  databaseAvailable: boolean,
-  userTokenExpired: boolean,
+type ApplicationSettingsTypes = {
+  applicationVersion: string;
+  copyrightYear: string;
+  applicationName: string;
+  // databaseNameProduction: string;
+  // databaseNameDevelopment: string;
+  baseURL: string;
+  baseURLApplied: boolean;
+  browserData: Record<string, unknown>;
+  // browserData: Partial<Navigator>; // * This causes an error that I'm not sure how to fix -- 09/16/2025 JH
+  computerLog: Record<string, unknown>;
+  userIdentifier: string;
+  databaseAvailable: boolean;
+  userTokenExpired: boolean;
 
-  locationLogged: boolean,
+  locationLogged: boolean;
 
-  // parametersURL: string,
+  // parametersURL: string;
 
-  demonstrationMode: boolean,
-  environmentMode: string,
+  demonstrationMode: boolean;
+  environmentMode: string;
 
-  checkDatabaseAvailable: any,
+  checkDatabaseAvailable: any;
 
-  applicationSettings: object;
-}
+  applicationSettings: Record<string, unknown>;
+};
 
 const initialState: ApplicationSettingsTypes = {
   applicationVersion: "",
@@ -58,42 +59,42 @@ const applicationSettingsSlice = createSlice({
   name: "applicationSettings",
   initialState,
   reducers: {
-    setApplicationVersion(state, action: PayloadAction<string>) {
+    setApplicationVersion(state, action: PayloadAction<ApplicationSettingsTypes["applicationVersion"]>) {
 
       state.applicationVersion = action.payload;
 
     },
-    setCopyrightYear(state, action: PayloadAction<string>) {
+    setCopyrightYear(state, action: PayloadAction<ApplicationSettingsTypes["copyrightYear"]>) {
 
       state.copyrightYear = action.payload;
 
     },
-    setBaseURL(state, action: PayloadAction<string>) {
+    setBaseURL(state, action: PayloadAction<ApplicationSettingsTypes["baseURL"]>) {
 
       state.baseURL = action.payload;
 
     },
-    setBaseURLApplied(state, action: PayloadAction<boolean>) {
+    setBaseURLApplied(state, action: PayloadAction<ApplicationSettingsTypes["baseURLApplied"]>) {
 
       state.baseURLApplied = action.payload;
 
     },
-    // setParametersURL(state, action: PayloadAction<any>) {
+    // setParametersURL(state, action: PayloadAction<ApplicationSettingsTypes["parametersURL"]>) {
 
     //   state.parametersURL = action.payload;
 
     // },
-    setDemonstrationMode(state, action: PayloadAction<boolean>) {
+    setDemonstrationMode(state, action: PayloadAction<ApplicationSettingsTypes["demonstrationMode"]>) {
 
       state.demonstrationMode = action.payload;
 
     },
-    setEnvironmentMode(state, action: PayloadAction<string>) {
+    setEnvironmentMode(state, action: PayloadAction<ApplicationSettingsTypes["environmentMode"]>) {
 
       state.environmentMode = action.payload;
 
     },
-    setComputerLog(state, action: PayloadAction<any>) {
+    setComputerLog(state, action: PayloadAction<ApplicationSettingsTypes["computerLog"]>) {
 
       state.computerLog = action.payload;
 
@@ -202,37 +203,37 @@ const applicationSettingsSlice = createSlice({
       // };
 
     },
-    setUserIdentifier(state, action: PayloadAction<any>) {
+    setUserIdentifier(state, action: PayloadAction<ApplicationSettingsTypes["userIdentifier"]>) {
 
       state.userIdentifier = action.payload;
 
     },
-    setDatabaseAvailable(state, action: PayloadAction<boolean>) {
+    setDatabaseAvailable(state, action: PayloadAction<ApplicationSettingsTypes["databaseAvailable"]>) {
 
       state.databaseAvailable = action.payload;
 
     },
-    setUserTokenExpired(state, action: PayloadAction<boolean>) {
+    setUserTokenExpired(state, action: PayloadAction<ApplicationSettingsTypes["userTokenExpired"]>) {
 
       state.userTokenExpired = action.payload;
 
     },
-    addBrowserData(state, action: PayloadAction<object>) {
+    addBrowserData(state, action: PayloadAction<ApplicationSettingsTypes["browserData"]>) {
 
       state.browserData = action.payload;
 
     },
-    setLocationLogged(state, action: PayloadAction<boolean>) {
+    setLocationLogged(state, action: PayloadAction<ApplicationSettingsTypes["locationLogged"]>) {
 
       state.locationLogged = action.payload;
 
     },
-    setCheckDatabaseAvailable(state, action: PayloadAction<any>) {
+    setCheckDatabaseAvailable(state, action: PayloadAction<ApplicationSettingsTypes["checkDatabaseAvailable"]>) {
 
       state.checkDatabaseAvailable = action.payload;
 
     },
-    setApplicationSettings(state, action: PayloadAction<object | null>) {
+    setApplicationSettings(state, action: PayloadAction<ApplicationSettingsTypes["applicationSettings"]>) {
 
       state.applicationSettings = action.payload;
 

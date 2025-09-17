@@ -59,7 +59,7 @@ const Navigation = () => {
 
     dispatch(setSessionToken(null));
 
-    dispatch(setLoggedInUser({}));
+    dispatch(setLoggedInUser(null));
 
     dispatch(setComponentToLoad(""));
 

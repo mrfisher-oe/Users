@@ -6,6 +6,7 @@ import { sessionTokenName, setFetchAuthorization } from "../utilities/applicatio
 import { setDatabaseAvailable, setUserTokenExpired } from "../app/applicationSettingsSlice";
 import { setComponentToLoad, setIsFormOpen, addSuccessMessage, addErrorMessage, clearMessages } from "../app/activitySlice";
 import type { RootState } from '../app/store';
+import type { User } from "../types/Users";
 
 type InlineErrors = {
   txtUsername: string;
@@ -13,23 +14,6 @@ type InlineErrors = {
   txtLastName: string;
   txtEmail: string;
   ddUserRole: string;
-} | null;
-
-type User = {
-  userID?: string | number; // TODO string or number? -- 09/15/2025 JH
-  username: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  password?: string;
-  userRoleID: string;
-  requestedBy: string;
-  requestDate: string;
-  notes: string;
-  active?: boolean;
-  userRole?: string;
-  lastLogin?: string;
-  updatedBy?: string | number; // TODO string or number? -- 09/15/2025 JH
 } | null;
 
 const Users = () => {
@@ -68,16 +52,16 @@ const Users = () => {
   const [currentUsers, setCurrentUsers] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState<User>(null);
 
-  const [userID, setUserID] = useState<string | number>(null); // TODO string or number? -- 09/15/2025 JH
-  const [txtUsername, setTxtUsername] = useState<string>("");
-  const [txtFirstName, setTxtFirstName] = useState<string>("");
-  const [txtLastName, setTxtLastName] = useState<string>("");
-  const [txtEmail, setTxtEmail] = useState<string>("");
-  const [txtPassword, setTxtPassword] = useState<string>("");
-  const [ddUserRole, setDdUserRole] = useState<string>("");
-  const [txtRequestedBy, setTxtRequestedBy] = useState<string>("");
-  const [txtRequestDate, setTxtRequestDate] = useState<string>("");
-  const [txtNotes, setTxtNotes] = useState<string>("");
+  const [userID, setUserID] = useState<User["userID"]>(null);
+  const [txtUsername, setTxtUsername] = useState<User["username"]>("");
+  const [txtFirstName, setTxtFirstName] = useState<User["firstName"]>("");
+  const [txtLastName, setTxtLastName] = useState<User["lastName"]>("");
+  const [txtEmail, setTxtEmail] = useState<User["email"]>("");
+  const [txtPassword, setTxtPassword] = useState<User["password"]>("");
+  const [ddUserRole, setDdUserRole] = useState<User["userRoleID"]>("");
+  const [txtRequestedBy, setTxtRequestedBy] = useState<User["requestedBy"]>("");
+  const [txtRequestDate, setTxtRequestDate] = useState<User["requestDate"]>("");
+  const [txtNotes, setTxtNotes] = useState<User["notes"]>("");
 
   const [inlineErrors, setInlineErrors] = useState<InlineErrors>({
     txtUsername: "",
@@ -693,7 +677,8 @@ const Users = () => {
       requestedBy: convertNullEmptyString(formatTrim(txtRequestedBy)),
       requestDate: convertNullEmptyString(formatTrim(txtRequestDate)),
       notes: convertNullEmptyString(formatTrim(txtNotes)),
-      updatedBy: !isEmpty(loggedInUser) && loggedInUser.userID
+      // updatedBy: !isEmpty(loggedInUser) && loggedInUser.userID
+      updatedBy: loggedInUser?.userID
     };
 
     if (transactionType === "I") {

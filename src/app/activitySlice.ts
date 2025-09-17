@@ -1,28 +1,29 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { isEmpty } from "shared-functions";
+import type { User } from "../types/Users";
 
-interface ActivityTypes {
-  sessionToken: string | null, // ?
-  loggedInUser: any, // ?
+type ActivityTypes = {
+  sessionToken: string | null; // ?
+  loggedInUser: User; // ?
 
-  componentToLoad: string,
-  isFormOpen: boolean,
+  componentToLoad: string;
+  isFormOpen: boolean;
 
-  informationMessage: string,
-  successMessage: string,
-  warningMessage: string,
-  errorMessage: string,
+  informationMessage: string;
+  successMessage: string;
+  warningMessage: string;
+  errorMessage: string;
 
-  informationMessageVisible: boolean,
-  successMessageVisible: boolean,
-  warningMessageVisible: boolean,
+  informationMessageVisible: boolean;
+  successMessageVisible: boolean;
+  warningMessageVisible: boolean;
   errorMessageVisible: boolean;
-}
+};
 
 const initialState: ActivityTypes = {
   sessionToken: null,
-  loggedInUser: {},
+  loggedInUser: null,
 
   componentToLoad: "",
   isFormOpen: false,
@@ -42,27 +43,27 @@ const activitySlice = createSlice({
   name: "activity",
   initialState,
   reducers: {
-    setSessionToken(state, action: PayloadAction<string | null>) {
+    setSessionToken(state, action: PayloadAction<ActivityTypes["sessionToken"]>) {
 
       state.sessionToken = action.payload;
 
     },
-    setLoggedInUser(state, action: PayloadAction<object>) {
+    setLoggedInUser(state, action: PayloadAction<ActivityTypes["loggedInUser"]>) {
 
       state.loggedInUser = action.payload;
 
     },
-    setComponentToLoad(state, action: PayloadAction<string>) {
+    setComponentToLoad(state, action: PayloadAction<ActivityTypes["componentToLoad"]>) {
 
       state.componentToLoad = action.payload;
 
     },
-    setIsFormOpen(state, action: PayloadAction<boolean>) {
+    setIsFormOpen(state, action: PayloadAction<ActivityTypes["isFormOpen"]>) {
 
       state.isFormOpen = action.payload;
 
     },
-    addInformationMessage(state, action: PayloadAction<string>) {
+    addInformationMessage(state, action: PayloadAction<ActivityTypes["informationMessage"]>) {
 
       if (!isEmpty(action.payload)) {
 
@@ -88,7 +89,7 @@ const activitySlice = createSlice({
       };
 
     },
-    addSuccessMessage(state, action: PayloadAction<string>) {
+    addSuccessMessage(state, action: PayloadAction<ActivityTypes["successMessage"]>) {
 
       if (!isEmpty(action.payload)) {
 
@@ -115,7 +116,7 @@ const activitySlice = createSlice({
       };
 
     },
-    addWarningMessage(state, action: PayloadAction<string>) {
+    addWarningMessage(state, action: PayloadAction<ActivityTypes["warningMessage"]>) {
 
       if (!isEmpty(action.payload)) {
 
@@ -142,7 +143,7 @@ const activitySlice = createSlice({
       };
 
     },
-    addErrorMessage(state, action: PayloadAction<string>) {
+    addErrorMessage(state, action: PayloadAction<ActivityTypes["errorMessage"]>) {
 
       if (!isEmpty(action.payload)) {
 

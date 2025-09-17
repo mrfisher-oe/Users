@@ -18,7 +18,7 @@ type InlineErrors = {
   txtUsername: string;
   txtPassword: string;
   ddAccountType: string;
-  cbxUserPermissions: { userPermissionID: number, userPermission: string; }[];
+  cbxUserPermissions: { userPermissionID: number; userPermission: string; }[];
   rdoActive: string;
 } | null;
 
