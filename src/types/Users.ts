@@ -14,4 +14,5 @@ export type User = {
   lastLogin?: string;
   updatedBy?: string | number; // TODO string or number? -- 09/15/2025 JH
   isSystemAdministrator?: boolean;
+  isAdministrator?: boolean;
 } | null;

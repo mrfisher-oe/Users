@@ -10,6 +10,16 @@ type ActivityTypes = {
   componentToLoad: string;
   isFormOpen: boolean;
 
+  currentUserRequestID: any;
+  currentUserRequest: Record<string, unknown>;
+
+  sosAssistantUserApplications: Record<string, unknown>[];
+
+  partners: Record<string, unknown>[];
+  currentPartners: Record<string, unknown>[];
+  partnerSites: Record<string, unknown>[];
+  currentPartnerSites: Record<string, unknown>[];
+
   informationMessage: string;
   successMessage: string;
   warningMessage: string;
@@ -27,6 +37,16 @@ const initialState: ActivityTypes = {
 
   componentToLoad: "",
   isFormOpen: false,
+
+  currentUserRequestID: null,
+  currentUserRequest: {},
+
+  sosAssistantUserApplications: [],
+
+  partners: [],
+  currentPartners: [],
+  partnerSites: [],
+  currentPartnerSites: [],
 
   informationMessage: "",
   successMessage: "",
@@ -61,6 +81,62 @@ const activitySlice = createSlice({
     setIsFormOpen(state, action: PayloadAction<ActivityTypes["isFormOpen"]>) {
 
       state.isFormOpen = action.payload;
+
+    },
+    setCurrentUserRequest(state, action: PayloadAction<ActivityTypes["currentUserRequest"]>) {
+
+      state.currentUserRequest = action.payload;
+
+      if (!isEmpty(action.payload)) {
+
+        state.currentUserRequestID = action.payload.sosAssistantUserRequestID;
+
+      } else {
+
+        state.currentUserRequestID = null;
+
+      };
+
+    },
+    setSOSAssistantUserApplications(state, action: PayloadAction<ActivityTypes["sosAssistantUserApplications"]>) {
+
+      state.sosAssistantUserApplications = action.payload;
+
+    },
+    setPartnerSites(state, action: PayloadAction<ActivityTypes["partnerSites"]>) {
+
+      state.partnerSites = action.payload;
+
+      let partnerSitesList = action.payload;
+      let currentPartnerSitesList = [];
+      let partnersList = [];
+      let currentPartnersList = [];
+
+      for (let i = 0; i < partnerSitesList.length; i++) {
+
+        if (partnerSitesList[i].currentPartner || partnerSitesList[i].currentPartner === 1) {
+
+          currentPartnerSitesList.push(partnerSitesList[i]);
+
+        };
+
+        if (partnersList.findIndex((partner) => partner.partnerID === partnerSitesList[i].partnerID) === -1) {
+
+          partnersList.push({ partnerID: partnerSitesList[i].partnerID, partnerName: partnerSitesList[i].partnerName });
+
+          if (partnerSitesList[i].currentPartner || partnerSitesList[i].currentPartner === 1) {
+
+            currentPartnersList.push({ partnerID: partnerSitesList[i].partnerID, partnerName: partnerSitesList[i].partnerName });
+
+          };
+
+        };
+
+      };
+
+      state.partners = [...partnersList];
+      state.currentPartners = [...currentPartnersList];
+      state.currentPartnerSites = [...currentPartnerSitesList];
 
     },
     addInformationMessage(state, action: PayloadAction<ActivityTypes["informationMessage"]>) {
@@ -186,6 +262,6 @@ const activitySlice = createSlice({
   }
 });
 
-export const { setSessionToken, setLoggedInUser, setComponentToLoad, setIsFormOpen, addInformationMessage, addSuccessMessage, addWarningMessage, addErrorMessage, clearMessages } = activitySlice.actions;
+export const { setSessionToken, setLoggedInUser, setComponentToLoad, setIsFormOpen, setCurrentUserRequest, setSOSAssistantUserApplications, setPartnerSites, addInformationMessage, addSuccessMessage, addWarningMessage, addErrorMessage, clearMessages } = activitySlice.actions;
 
 export default activitySlice.reducer;

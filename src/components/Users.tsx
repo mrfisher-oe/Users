@@ -16,7 +16,11 @@ type InlineErrors = {
   ddUserRole: string;
 } | null;
 
-const Users = () => {
+type UserProps = {
+  processTransactionUserRequest?: (transactionType: string) => void;
+};
+
+const Users = ({ processTransactionUserRequest }: UserProps) => {
 
   const dispatch = useAppDispatch();
 
@@ -34,7 +38,19 @@ const Users = () => {
   const loggedInUser = useAppSelector((state: RootState) => state.activity.loggedInUser);
   const sessionToken = useAppSelector((state: RootState) => state.activity.sessionToken);
 
+  // const sosAssistantUserRequests = useAppSelector((state: RootState) => state.activity.sosAssistantUserRequests);
+  const sosAssistantUserApplications = useAppSelector((state: RootState) => state.activity.sosAssistantUserApplications);
+  // const requestTypes = useAppSelector((state: RootState) => state.activity.requestTypes);
+  // const partners = useAppSelector((state: RootState) => state.activity.partners);
+  // const currentPartners = useAppSelector((state: RootState) => state.activity.currentPartners);
+  // const partnerSites = useAppSelector((state: RootState) => state.activity.partnerSites);
+  const currentPartnerSites = useAppSelector((state: RootState) => state.activity.currentPartnerSites);
+  // const associatedData = useAppSelector((state: RootState) => state.activity.associatedData);
+
   const isFormOpen = useAppSelector((state: RootState) => state.activity.isFormOpen);
+
+  const currentUserRequest = useAppSelector((state: RootState) => state.activity.currentUserRequest);
+  // const currentUserRequestID = useAppSelector((state: RootState) => state.activity.currentUserRequestID);
 
   // * Search/filters -- 05/07/2024 JH
   const [txtSearch, setTxtSearch] = useState<string>("");

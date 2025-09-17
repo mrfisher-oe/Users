@@ -9,8 +9,8 @@ type ApplicationSettingsTypes = {
   // databaseNameDevelopment: string;
   baseURL: string;
   baseURLApplied: boolean;
-  browserData: Record<string, unknown>;
-  // browserData: Partial<Navigator>; // * This causes an error that I'm not sure how to fix -- 09/16/2025 JH
+  // browserData: Record<string, unknown>;
+  browserData: Partial<Navigator>; // * This causes an error that I'm not sure how to fix -- 09/16/2025 JH
   computerLog: Record<string, unknown>;
   userIdentifier: string;
   databaseAvailable: boolean;
@@ -220,7 +220,8 @@ const applicationSettingsSlice = createSlice({
     },
     addBrowserData(state, action: PayloadAction<ApplicationSettingsTypes["browserData"]>) {
 
-      state.browserData = action.payload;
+      // state.browserData = action.payload;
+      Object.assign(state.browserData, action.payload);
 
     },
     setLocationLogged(state, action: PayloadAction<ApplicationSettingsTypes["locationLogged"]>) {

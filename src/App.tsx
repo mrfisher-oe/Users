@@ -3,8 +3,10 @@ import { useAppSelector, useAppDispatch } from "./app/hooks";
 import { /* AuthenticatedTemplate, UnauthenticatedTemplate, */ useIsAuthenticated, useMsal } from "@azure/msal-react";
 import { InteractionStatus } from "@azure/msal-browser";
 import { AlertPopup, CheckboxGroup, FormDropdown, FormInput, FormRadioGroup, Footer, Header } from "shared-components";
-import { isEmpty, getDateTime, isNonEmptyArray, formatTrim, getQueryStringData, addLog, addErrorLog, addComputerLog, parse, isLocalDevelopment, showDevelopment, showPlayground, showAuthentication, allowLogging, resolveBaseURL, resolveRedirectURL } from "shared-functions";
+import { isEmpty, getDateTime, isNonEmptyArray, formatTrim, getFirstItem, getQueryStringData, addLog, addErrorLog, addComputerLog, parse, isLocalDevelopment, showDevelopment, showPlayground, showAuthentication, allowLogging, resolveBaseURL, resolveRedirectURL, convertSpecialCharacters } from "shared-functions";
 // import { msalInstance } from "./index";
+import { setComponentToLoad, setCurrentUserRequest, addSuccessMessage, addErrorMessage, clearMessages } from "./app/activitySlice";
+import { setApplicationVersion, setCopyrightYear, setBaseURL, setBaseURLApplied, /* setParametersURL, */ setDemonstrationMode, setEnvironmentMode, setComputerLog, setUserIdentifier, setDatabaseAvailable, setUserTokenExpired, addBrowserData, setLocationLogged } from "./app/applicationSettingsSlice";
 import { loginRequest } from "./utilities/authenticationConfig";
 import { setFetchAuthorization /* , callMsGraph */ } from "./utilities/applicationFunctions";
 import Navigation from "./components/Navigation";
@@ -13,6 +15,9 @@ import Login from "./components/Login";
 import Profile from "./components/Profile";
 import Messages from "./components/Messages";
 import Users from "./components/Users";
+import UserApplications from "./components/UserApplications";
+import UserRequest from "./components/UserRequest";
+import UserRequests from "./components/UserRequests";
 
 type InlineErrors = {
   txtUsername: string;
@@ -29,7 +34,17 @@ type AppProps = {
 
 const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps) => {
 
+  const dispatch = useAppDispatch();
+
+  const databaseAvailable = useAppSelector((state: RootState) => state.applicationSettings.databaseAvailable);
+
+  const loggedInUser = useAppSelector((state: RootState) => state.activity.loggedInUser);
+  const sessionToken = useAppSelector((state: RootState) => state.activity.sessionToken);
+
   const componentToLoad = useAppSelector((state: RootState) => state.activity.componentToLoad);
+
+  const currentUserRequest = useAppSelector((state: RootState) => state.activity.currentUserRequest);
+  const currentUserRequestID = useAppSelector((state: RootState) => state.activity.currentUserRequestID);
 
   const isAuthenticated = useIsAuthenticated();
   const { inProgress, instance } = useMsal();
@@ -40,7 +55,7 @@ const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps)
   const [computerLog1, setComputerLog1] = useState({});
   const [computerLog2, setComputerLog2] = useState({});
   const [locationLogged, setLocationLogged] = useState<boolean>(false);
-  const [databaseAvailable, setDatabaseAvailable] = useState(true);
+  // const [databaseAvailable, setDatabaseAvailable] = useState(true);
   const [computerLog, setComputerLog] = useState({});
   const [userIdentifier, setUserIdentifier] = useState("");
 
@@ -74,6 +89,13 @@ const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps)
   const baseURL = resolveBaseURL("user", environmentMode, demonstrationMode, false);
 
   const redirectURL = resolveRedirectURL(environmentMode, demonstrationMode);
+
+
+  useEffect(() => {
+
+    console.log("browserData", browserData);
+
+  }, [browserData]);
 
 
   useEffect(() => {
@@ -577,6 +599,145 @@ const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps)
   };
 
 
+  const processTransactionUserRequest = (transactionType: string) => {
+
+    let url: string = `${baseURL}sosAssistantUsers/sosAssistantUserRequests/`; // TODO update url -- 09/16/2025 JH
+    // let response: Record<string, unknown> = null;
+    let response: any = null;
+    let data: Record<string, unknown> = null;
+    let operation: string = "";
+    let method: string = "";
+    let previousRecord: Record<string, unknown> = currentUserRequest;
+    // let primaryKeyID: string | number = currentUserRequestID;
+    let primaryKeyID: any = currentUserRequestID;
+
+    let recordObject: Record<string, unknown> = {
+      // requestTypeID: convertNullEmptyString(userRequestTypeID),
+      // firstName: convertNullEmptyString(formatTrim(txtFirstName)),
+      // lastName: convertNullEmptyString(formatTrim(txtLastName)),
+      // email: convertNullEmptyString(formatTrim(txtEmail)),
+      // partnerSiteID: convertNullEmptyString(ddPartnerSiteID),
+      // positionID: convertNullEmptyString(formatTrim(ddPositionID)),
+      // programID: convertNullEmptyString(formatTrim(rdoProgramID)),
+      // details: convertNullEmptyString(formatTrim(txtDetails))
+      completed: true
+    };
+
+    if (transactionType === "I") {
+
+      // * Add the record. -- 04/16/2021 MF
+      operation = "Added SOS Assistant User Request";
+      method = "POST";
+      recordObject.active = true;
+
+    } else if (transactionType === "U") {
+
+      // * Update the record. -- 04/16/2021 MF
+      operation = "Updated SOS Assistant User Request";
+      method = "PUT";
+      url = url + primaryKeyID;
+      recordObject.sosAssistantUserRequestID = primaryKeyID;
+      recordObject.active = currentUserRequest.active;
+
+    } else if (transactionType === "D") {
+
+      // * Delete the record. -- 06/02/2021 MF
+      operation = "Deleted SOS Assistant User Request";
+      method = "PUT";
+      url = url + primaryKeyID;
+      recordObject.sosAssistantUserRequestID = primaryKeyID;
+      recordObject.active = false;
+
+    };
+
+    fetch(url, {
+      method: method,
+      headers: new Headers({
+        "Content-Type": "application/json", "Authorization": setFetchAuthorization(sessionToken, environmentMode, demonstrationMode)
+      }),
+      body: JSON.stringify({ recordObject })
+    })
+      .then(results => {
+
+        response = results;
+
+        if (response.status === 200) {
+
+          return response.json();
+
+        } else {
+
+          addErrorLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation: `${operation} SQL Server`, userIdentifier, transactionData: { url, response: { ok: response.ok, redirected: response.redirected, status: response.status, statusText: response.statusText, type: response.type, url: response.url }, data, previousRecord, recordObject, applicationVersion, loggedInUser, computerLog }, errorData: { message: `${response.status} ${response.statusText} ${response.url}` }, dateEntered: getDateTime() });
+
+          if (response.status === 401) {
+
+            dispatch(setUserTokenExpired(true));
+
+          };
+
+          return Promise.reject(Error(response.status + " Fetch failed."));
+
+        };
+
+      })
+      .then(results => {
+
+        data = results;
+
+        if (!isEmpty(data)) {
+
+          if (data.transactionSuccess && !isEmpty(data.records)) {
+
+            let dataRecord = getFirstItem(data.records);
+
+            if (transactionType === "D") {
+
+              dispatch(setCurrentUserRequest({}));
+
+            };
+
+            dispatch(setDatabaseAvailable(true));
+
+            primaryKeyID = data.primaryKeyID;
+
+            addLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, href: window.location.href, applicationVersion, browserData: JSON.stringify(browserData), transactionData: { dataRecord, previousRecord, loggedInUser, computerLog }, dateEntered: getDateTime() });
+
+            dispatch(addSuccessMessage(`${operation}: ${data.message}`));
+
+          } else {
+
+            // console.error(operation, "data.message", data.message);
+
+            dispatch(addErrorMessage(`${operation}: ${data.message}`));
+
+            addErrorLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation: `${operation} SQL Server`, userIdentifier, transactionData: { url, response: { ok: response.ok, redirected: response.redirected, status: response.status, statusText: response.statusText, type: response.type, url: response.url }, data, /* previousRecord, */ recordObject, applicationVersion, loggedInUser, computerLog }, errorData: { message: data.message }, dateEntered: getDateTime() });
+
+          };
+
+        } else {
+
+          dispatch(addErrorMessage(`${operation}: No Results Returned.`));
+
+          addErrorLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation: `${operation} SQL Server`, userIdentifier, transactionData: { url, response: { ok: response.ok, redirected: response.redirected, status: response.status, statusText: response.statusText, type: response.type, url: response.url }, data, /* previousRecord, */ recordObject, applicationVersion, loggedInUser, computerLog }, errorData: { message: "No Results Returned." }, dateEntered: getDateTime() });
+
+        };
+
+      })
+      .catch((error) => {
+
+        // console.error(operation, "error", error);
+
+        dispatch(addErrorMessage(`${operation}: ${convertSpecialCharacters(error.name)}: ${convertSpecialCharacters(error.message)}`));
+
+        addErrorLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, transactionData: { primaryKeyID, previousRecord, recordObject, applicationVersion, loggedInUser, computerLog }, errorData: { name: error.name, message: error.message, inner: error.inner, stack: error.stack }, dateEntered: getDateTime() });
+
+        dispatch(setDatabaseAvailable(false));
+
+      });
+
+  };
+
+
   return (
     <>
 
@@ -655,7 +816,35 @@ const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps)
 
         {componentToLoad === "Profile" ? <Profile /> : null}
 
-        {componentToLoad === "Users" ? <Users /> : null}
+        {componentToLoad === "Users" && !isEmpty(loggedInUser) && loggedInUser.isAdministrator ?
+
+          <Users processTransactionUserRequest={processTransactionUserRequest} />
+
+          : null}
+
+        {/* {componentToLoad === "UserRequest" ?
+
+          <UserRequest />
+
+          : null}
+
+        {componentToLoad === "UserRequests" && !isEmpty(loggedInUser) && loggedInUser.isAdministrator ?
+
+          <UserRequests processTransactionUserRequest={processTransactionUserRequest} />
+
+          : null}
+
+        {componentToLoad === "UserApplications" && !isEmpty(loggedInUser) && loggedInUser.isSystemAdministrator ?
+
+          <UserApplications />
+
+          : null} */}
+
+        {componentToLoad === "Users" && !isEmpty(loggedInUser) && loggedInUser.isSystemAdministrator ?
+
+          <Users />
+
+          : null}
 
         <Footer copyrightYear={copyrightYear} applicationVersion={applicationVersion} />
 
