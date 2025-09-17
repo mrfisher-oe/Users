@@ -9,8 +9,17 @@ type ApplicationSettingsTypes = {
   // databaseNameDevelopment: string;
   baseURL: string;
   baseURLApplied: boolean;
-  // browserData: Record<string, unknown>;
-  browserData: Partial<Navigator>; // * This causes an error that I'm not sure how to fix -- 09/16/2025 JH
+  browserData: {
+    appCodeName: string;
+    appName: string;
+    appVersion: string;
+    cookieEnabled: boolean;
+    language: string;
+    onLine: boolean;
+    platform: string;
+    product: string;
+    userAgent: string;
+  } | null;
   computerLog: Record<string, unknown>;
   userIdentifier: string;
   databaseAvailable: boolean;
@@ -36,7 +45,7 @@ const initialState: ApplicationSettingsTypes = {
   // databaseNameDevelopment: "UsersDevelopment",
   baseURL: "",
   baseURLApplied: false,
-  browserData: {},
+  browserData: null,
   computerLog: {},
   userIdentifier: "",
   databaseAvailable: true,
