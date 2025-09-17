@@ -181,7 +181,7 @@ const Users = () => {
 
     if (!isEmpty(inlineErrors)) {
 
-      if (!isEmpty(inlineErrors.txtUsername) && !isEmpty(txtUsername) && !checkIsDuplicateUsername(txtUsername)) {
+      if (!isEmpty(inlineErrors.txtUsername) && !isEmpty(txtUsername) && !isDuplicateUsername(txtUsername)) {
 
         setInlineErrors({
           ...inlineErrors,
@@ -447,11 +447,21 @@ const Users = () => {
   };
 
 
-  const checkIsDuplicateUsername = (username) => {
+  const isDuplicateUsername = (username: string) => {
 
-    let duplicateUsernameFilter = users.filter((user) => formatLowerCase(user.username) === formatLowerCase(username));
+    const formattedUsername: string = formatLowerCase(formatTrim(username));
 
-    return !isEmptyArray(duplicateUsernameFilter);
+    let isDuplicate: boolean = false;
+
+    if (formattedUsername !== formatLowerCase(currentUser?.username)) {
+
+      const duplicateUsernameFilter = users.filter((user) => formatLowerCase(user.username) === formattedUsername);
+
+      isDuplicate = !isEmptyArray(duplicateUsernameFilter);
+
+    };
+
+    return isDuplicate;
 
   };
 
@@ -486,7 +496,7 @@ const Users = () => {
         txtUsername: "Please enter the <strong>Username</strong>."
       };
 
-    } else if (formatTrim(txtUsername) !== currentUser?.username && checkIsDuplicateUsername(formatTrim(txtUsername))) {
+    } else if (formatTrim(txtUsername) !== currentUser?.username && isDuplicateUsername(txtUsername)) {
 
       // * Make sure that the user's Username is unique. -- 06/24/2021 MF
       // errorMessages = `${errorMessages}, <strong>Username</strong>`;
