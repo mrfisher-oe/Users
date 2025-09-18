@@ -1,39 +1,51 @@
 import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppSelector, useAppDispatch } from "../app/hooks";
 import { FormDropdown, FormInput, FormRadioGroup } from "shared-components";
-import { emailFormat, isEmpty, getDateTime, isNonEmptyArray, getFirstItem, convertSpecialCharacters, convertNullEmptyString, formatTrim, createDateFromString, isFutureDate, addLog, addErrorLog, parse, allowLogging } from "shared-functions";
+import { emailFormat, isEmpty, getDateTime, isNonEmptyArray, getFirstItem, convertSpecialCharacters, convertNullEmptyString, formatTrim, createDateFromString, isFutureDate, addLog, addErrorLog, parse, allowLogging, getBrowserData } from "shared-functions";
 import { setFetchAuthorization } from "../utilities/applicationFunctions";
 import { setDatabaseAvailable, setUserTokenExpired } from "../app/applicationSettingsSlice";
 import { setComponentToLoad, addSuccessMessage, addErrorMessage, clearMessages } from "../app/activitySlice";
+import type { RootState } from '../app/store';
+
+type InlineErrors = {
+  ddPartnerSiteID: string;
+  txtFirstName: string;
+  txtLastName: string;
+  txtEmail: string;
+  txtSimulationDate: string;
+  ddPositionID: string;
+  rdoProgramID: string;
+  txtPreferredDate: string;
+} | null;
 
 const UserRequest = () => {
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const applicationVersion = useSelector(state => state.applicationSettings.applicationVersion);
-  const baseURL = useSelector(state => state.applicationSettings.baseURL);
-  // const baseURLApplied = useSelector(state => state.applicationSettings.baseURLApplied);
-  const browserData = useSelector(state => state.applicationSettings.browserData);
-  const computerLog = useSelector(state => state.applicationSettings.computerLog);
-  const userIdentifier = useSelector(state => state.applicationSettings.userIdentifier);
-  const demonstrationMode = useSelector(state => state.activity.demonstrationMode);
-  const environmentMode = useSelector(state => state.applicationSettings.environmentMode);
-  const databaseAvailable = useSelector(state => state.applicationSettings.databaseAvailable);
-  // const userTokenExpired = useSelector(state => state.applicationSettings.userTokenExpired);
+  const applicationVersion = useAppSelector((state: RootState) => state.applicationSettings.applicationVersion);
+  const baseURL = useAppSelector((state: RootState) => state.applicationSettings.baseURL);
+  // const baseURLApplied = useAppSelector((state: RootState) => state.applicationSettings.baseURLApplied);
+  // const browserData = useAppSelector((state: RootState) => state.applicationSettings.browserData);
+  const computerLog = useAppSelector((state: RootState) => state.applicationSettings.computerLog);
+  const userIdentifier = useAppSelector((state: RootState) => state.applicationSettings.userIdentifier);
+  const demonstrationMode = useAppSelector((state: RootState) => state.applicationSettings.demonstrationMode);
+  const environmentMode = useAppSelector((state: RootState) => state.applicationSettings.environmentMode);
+  const databaseAvailable = useAppSelector((state: RootState) => state.applicationSettings.databaseAvailable);
+  // const userTokenExpired = useAppSelector((state: RootState) => state.applicationSettings.userTokenExpired);
 
-  const loggedInUser = useSelector(state => state.activity.loggedInUser);
-  // const sessionToken = useSelector(state => state.activity.sessionToken);
+  const loggedInUser = useAppSelector((state: RootState) => state.activity.loggedInUser);
+  // const sessionToken = useAppSelector((state: RootState) => state.activity.sessionToken);
 
-  // const sosAssistantUserRequests = useSelector(state => state.activity.sosAssistantUserRequests);
-  // const sosAssistantUserApplications = useSelector(state => state.activity.sosAssistantUserApplications);
-  // const requestTypes = useSelector(state => state.activity.requestTypes);
-  // const partners = useSelector(state => state.activity.partners);
-  // const currentPartners = useSelector(state => state.activity.currentPartners);
-  // const partnerSites = useSelector(state => state.activity.partnerSites);
-  const currentPartnerSites = useSelector(state => state.activity.currentPartnerSites);
-  const associatedData = useSelector(state => state.activity.associatedData);
+  // const sosAssistantUserRequests = useAppSelector((state: RootState) => state.activity.sosAssistantUserRequests);
+  // const sosAssistantUserApplications = useAppSelector((state: RootState) => state.activity.sosAssistantUserApplications);
+  // const requestTypes = useAppSelector((state: RootState) => state.activity.requestTypes);
+  // const partners = useAppSelector((state: RootState) => state.activity.partners);
+  // const currentPartners = useAppSelector((state: RootState) => state.activity.currentPartners);
+  // const partnerSites = useAppSelector((state: RootState) => state.activity.partnerSites);
+  const currentPartnerSites = useAppSelector((state: RootState) => state.activity.currentPartnerSites);
+  const associatedData = useAppSelector((state: RootState) => state.activity.associatedData);
 
-  const sosAssistantUserRequestTypeID = useSelector(state => state.activity.sosAssistantUserRequestTypeID);
+  const sosAssistantUserRequestTypeID = useAppSelector((state: RootState) => state.activity.sosAssistantUserRequestTypeID);
 
   const [sosAssistantUserRequestID, setSOSAssistantUserRequestID] = useState(null);
   const [ddPartnerSiteID, setDdPartnerSiteID] = useState("");
@@ -46,7 +58,16 @@ const UserRequest = () => {
   const [cbxNotApplicable, setCbxNotApplicable] = useState(false);
   const [txtDetails, setTxtDetails] = useState("");
 
-  const [inlineErrors, setInlineErrors] = useState({});
+  const [inlineErrors, setInlineErrors] = useState<InlineErrors>({
+    ddPartnerSiteID: "",
+    txtFirstName: "",
+    txtLastName: "",
+    txtEmail: "",
+    txtSimulationDate: "",
+    ddPositionID: "",
+    rdoProgramID: "",
+    txtPreferredDate: ""
+  });
 
   let buttonsDisabled = !isEmpty(sosAssistantUserRequestID);
 
@@ -148,13 +169,22 @@ const UserRequest = () => {
 
     dispatch(clearMessages());
 
-    let operation = "Save Record";
+    let operation: string = "Save Record";
 
-    let transactionValid = false;
-    let errorMessages = "";
-    let formatErrorMessages = "";
+    let transactionValid: boolean = false;
+    let errorMessages: string = "";
+    let formatErrorMessages: string = "";
 
-    let inlineErrorMessages = {};
+    let inlineErrorMessages: InlineErrors = {
+      ddPartnerSiteID: "",
+      txtFirstName: "",
+      txtLastName: "",
+      txtEmail: "",
+      txtSimulationDate: "",
+      ddPositionID: "",
+      rdoProgramID: "",
+      txtPreferredDate: ""
+    };
 
     if (isEmpty(ddPartnerSiteID)) {
 
@@ -342,17 +372,17 @@ const UserRequest = () => {
   };
 
 
-  const processTransaction = (transactionType) => {
+  const processTransaction = (transactionType: string) => {
 
-    let url = `${baseURL}sosAssistantUsers/sosAssistantUserRequests/`;
-    let response = "";
-    let data = "";
-    let operation = "";
-    let method = "";
+    let url: string = `${baseURL}sosAssistantUsers/sosAssistantUserRequests/`;
+    let response: any = "";
+    let data: any = "";
+    let operation: string = "";
+    let method: string = "";
     // let previousRecord = currentRequest;
-    let primaryKeyID = "";
+    let primaryKeyID: string | number = "";
 
-    let recordObject = {
+    let recordObject: any = {
       requestTypeID: convertNullEmptyString(sosAssistantUserRequestTypeID),
       firstName: convertNullEmptyString(formatTrim(txtFirstName)),
       lastName: convertNullEmptyString(formatTrim(txtLastName)),
@@ -442,7 +472,7 @@ const UserRequest = () => {
 
             setSOSAssistantUserRequestID(primaryKeyID);
 
-            addLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, href: window.location.href, applicationVersion, browserData: JSON.stringify(browserData), transactionData: { dataRecord, /* previousRecord, */ loggedInUser, computerLog }, dateEntered: getDateTime() });
+            addLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, href: window.location.href, applicationVersion, browserData: JSON.stringify(getBrowserData()), transactionData: { dataRecord, /* previousRecord, */ loggedInUser, computerLog }, dateEntered: getDateTime() });
 
             dispatch(addSuccessMessage(`${operation}: ${data.message}`));
 
@@ -484,14 +514,14 @@ const UserRequest = () => {
   };
 
 
-  const sendNotificationEmail = (submitType, primaryKeyID) => {
+  const sendNotificationEmail = (submitType: string | number, primaryKeyID: string | number) => {
 
     if (!isEmpty(baseURL)) {
 
-      let url = `${baseURL}notifications/`;
-      let response = "";
-      let data = "";
-      let operation = "";
+      let url: string = `${baseURL}notifications/`;
+      let response: any = "";
+      let data: any = "";
+      let operation: string = "";
 
       if (submitType === 5) {
 

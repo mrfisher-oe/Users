@@ -9,17 +9,17 @@ type ApplicationSettingsTypes = {
   // databaseNameDevelopment: string;
   baseURL: string;
   baseURLApplied: boolean;
-  browserData: {
-    appCodeName: string;
-    appName: string;
-    appVersion: string;
-    cookieEnabled: boolean;
-    language: string;
-    onLine: boolean;
-    platform: string;
-    product: string;
-    userAgent: string;
-  } | null;
+  // browserData: {
+  //   appCodeName: string;
+  //   appName: string;
+  //   appVersion: string;
+  //   cookieEnabled: boolean;
+  //   language: string;
+  //   onLine: boolean;
+  //   platform: string;
+  //   product: string;
+  //   userAgent: string;
+  // } | null;
   computerLog: Record<string, unknown>;
   userIdentifier: string;
   databaseAvailable: boolean;
@@ -35,6 +35,8 @@ type ApplicationSettingsTypes = {
   checkDatabaseAvailable: any;
 
   applicationSettings: Record<string, unknown>;
+
+  fetchDataSOSAssistantUserApplications: boolean;
 };
 
 const initialState: ApplicationSettingsTypes = {
@@ -45,7 +47,7 @@ const initialState: ApplicationSettingsTypes = {
   // databaseNameDevelopment: "UsersDevelopment",
   baseURL: "",
   baseURLApplied: false,
-  browserData: null,
+  // browserData: null,
   computerLog: {},
   userIdentifier: "",
   databaseAvailable: true,
@@ -60,7 +62,10 @@ const initialState: ApplicationSettingsTypes = {
 
   checkDatabaseAvailable: null,
 
-  applicationSettings: {}
+  applicationSettings: {},
+
+
+  fetchDataSOSAssistantUserApplications: false
 
 };
 
@@ -227,12 +232,13 @@ const applicationSettingsSlice = createSlice({
       state.userTokenExpired = action.payload;
 
     },
-    addBrowserData(state, action: PayloadAction<ApplicationSettingsTypes["browserData"]>) {
+    // addBrowserData(state, action: PayloadAction<ApplicationSettingsTypes["browserData"]>) {
 
-      // state.browserData = action.payload;
-      Object.assign(state.browserData, action.payload);
+    //   // ? Remove from redux and just use getBrowserData from shared-functions? -- 09/17/2025 JH
+    //   state.browserData = action.payload;
+    //   // Object.assign(state.browserData, action.payload);
 
-    },
+    // },
     setLocationLogged(state, action: PayloadAction<ApplicationSettingsTypes["locationLogged"]>) {
 
       state.locationLogged = action.payload;
@@ -247,10 +253,15 @@ const applicationSettingsSlice = createSlice({
 
       state.applicationSettings = action.payload;
 
+    },
+    setFetchDataSOSAssistantUserApplications(state, action: PayloadAction<ApplicationSettingsTypes["fetchDataSOSAssistantUserApplications"]>) {
+
+      state.fetchDataSOSAssistantUserApplications = action.payload;
+
     }
   }
 });
 
-export const { setApplicationVersion, setCopyrightYear, setBaseURL, setBaseURLApplied, /* setBaseURLPartners, setParametersURL, */ setDemonstrationMode, setEnvironmentMode, setComputerLog, setUserIdentifier, setDatabaseAvailable, setUserTokenExpired, addBrowserData, setLocationLogged, setCheckDatabaseAvailable, setApplicationSettings } = applicationSettingsSlice.actions;
+export const { setApplicationVersion, setCopyrightYear, setBaseURL, setBaseURLApplied, /* setBaseURLPartners, setParametersURL, */ setDemonstrationMode, setEnvironmentMode, setComputerLog, setUserIdentifier, setDatabaseAvailable, setUserTokenExpired, /* addBrowserData, */ setLocationLogged, setCheckDatabaseAvailable, setApplicationSettings, setFetchDataSOSAssistantUserApplications } = applicationSettingsSlice.actions;
 
 export default applicationSettingsSlice.reducer;

@@ -3,10 +3,10 @@ import { useAppSelector, useAppDispatch } from "./app/hooks";
 import { /* AuthenticatedTemplate, UnauthenticatedTemplate, */ useIsAuthenticated, useMsal } from "@azure/msal-react";
 import { InteractionStatus } from "@azure/msal-browser";
 import { AlertPopup, CheckboxGroup, FormDropdown, FormInput, FormRadioGroup, Footer, Header } from "shared-components";
-import { isEmpty, getDateTime, isNonEmptyArray, formatTrim, getFirstItem, getQueryStringData, addLog, addErrorLog, addComputerLog, parse, isLocalDevelopment, showDevelopment, showPlayground, showAuthentication, allowLogging, resolveBaseURL, resolveRedirectURL, convertSpecialCharacters } from "shared-functions";
+import { isEmpty, getDateTime, isNonEmptyArray, formatTrim, getFirstItem, getQueryStringData, addLog, addErrorLog, addComputerLog, parse, isLocalDevelopment, showDevelopment, showPlayground, showAuthentication, allowLogging, resolveBaseURL, resolveRedirectURL, convertSpecialCharacters, getBrowserData } from "shared-functions";
 // import { msalInstance } from "./index";
 import { setComponentToLoad, setCurrentUserRequest, addSuccessMessage, addErrorMessage, clearMessages } from "./app/activitySlice";
-import { setApplicationVersion, setCopyrightYear, setBaseURL, setBaseURLApplied, /* setParametersURL, */ setDemonstrationMode, setEnvironmentMode, setComputerLog, setUserIdentifier, setDatabaseAvailable, setUserTokenExpired, addBrowserData, setLocationLogged } from "./app/applicationSettingsSlice";
+import { setApplicationVersion, setCopyrightYear, setBaseURL, setBaseURLApplied, /* setParametersURL, */ setDemonstrationMode, setEnvironmentMode, setComputerLog, setUserIdentifier, setDatabaseAvailable, setUserTokenExpired, setLocationLogged } from "./app/applicationSettingsSlice";
 import { loginRequest } from "./utilities/authenticationConfig";
 import { setFetchAuthorization /* , callMsGraph */ } from "./utilities/applicationFunctions";
 import Navigation from "./components/Navigation";
@@ -51,7 +51,7 @@ const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps)
 
   const [url1Loaded, setURL1Loaded] = useState<boolean>(false);
   const [url2Loaded, setURL2Loaded] = useState<boolean>(false);
-  const [browserData, setBrowserData] = useState({});
+  // const [browserData, setBrowserData] = useState({});
   const [computerLog1, setComputerLog1] = useState({});
   const [computerLog2, setComputerLog2] = useState({});
   const [locationLogged, setLocationLogged] = useState<boolean>(false);
@@ -93,13 +93,6 @@ const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps)
 
   useEffect(() => {
 
-    console.log("browserData", browserData);
-
-  }, [browserData]);
-
-
-  useEffect(() => {
-
     let queryStringData = getQueryStringData();
 
     // * Retrieve the queryString values if there are any. -- 05/10/2022 MF
@@ -129,7 +122,7 @@ const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps)
 
     };
 
-    setBrowserData({ appCodeName: navigator.appCodeName, appName: navigator.appName, appVersion: navigator.appVersion, cookieEnabled: navigator.cookieEnabled, language: navigator.language, onLine: navigator.onLine, platform: navigator.platform, product: navigator.product, userAgent: navigator.userAgent });
+    // setBrowserData({ appCodeName: navigator.appCodeName, appName: navigator.appName, appVersion: navigator.appVersion, cookieEnabled: navigator.cookieEnabled, language: navigator.language, onLine: navigator.onLine, platform: navigator.platform, product: navigator.product, userAgent: navigator.userAgent });
 
     if (locationLogged !== true && allowLogging()) {
 
@@ -315,7 +308,7 @@ const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps)
         learningObjectTitle: applicationName, /* title, */
         href,
         applicationVersion,
-        browserData: JSON.stringify(browserData),
+        browserData: JSON.stringify(getBrowserData()),
 
         lastAccessed: getDateTime(),
 
@@ -347,7 +340,7 @@ const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps)
         learningObjectTitle: applicationName, /* title, */
         href,
         applicationVersion,
-        browserData: JSON.stringify(browserData),
+        browserData: JSON.stringify(getBrowserData()),
 
         lastAccessed: getDateTime(),
 
@@ -607,7 +600,7 @@ const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps)
     let data: Record<string, unknown> = null;
     let operation: string = "";
     let method: string = "";
-    let previousRecord: Record<string, unknown> = currentUserRequest;
+    let previousRecord = currentUserRequest;
     // let primaryKeyID: string | number = currentUserRequestID;
     let primaryKeyID: any = currentUserRequestID;
 
@@ -692,7 +685,7 @@ const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps)
 
             if (transactionType === "D") {
 
-              dispatch(setCurrentUserRequest({}));
+              dispatch(setCurrentUserRequest(null));
 
             };
 
@@ -700,7 +693,7 @@ const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps)
 
             primaryKeyID = data.primaryKeyID;
 
-            addLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, href: window.location.href, applicationVersion, browserData: JSON.stringify(browserData), transactionData: { dataRecord, previousRecord, loggedInUser, computerLog }, dateEntered: getDateTime() });
+            addLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, href: window.location.href, applicationVersion, browserData: JSON.stringify(getBrowserData()), transactionData: { dataRecord, previousRecord, loggedInUser, computerLog }, dateEntered: getDateTime() });
 
             dispatch(addSuccessMessage(`${operation}: ${data.message}`));
 

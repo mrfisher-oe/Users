@@ -1,47 +1,48 @@
 import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppSelector, useAppDispatch } from "../app/hooks";
 import { FormDropdown, DialogBoxConfirmation, SortableColumnHeader, useDialogBoxConfirmation, NoResultsText } from "shared-components";
-import { isEmpty, getDateTime, isNonEmptyArray, getFirstItem, sortObjectArrayByProperty, displayValue, displayDate, convertSpecialCharacters, addLog, addErrorLog, allowLogging } from "shared-functions";
+import { isEmpty, getDateTime, isNonEmptyArray, getFirstItem, sortObjectArrayByProperty, displayValue, displayDate, convertSpecialCharacters, addLog, addErrorLog, allowLogging, getBrowserData } from "shared-functions";
 import { sessionTokenName, setFetchAuthorization } from "../utilities/applicationFunctions";
 import { setDatabaseAvailable, setUserTokenExpired } from "../app/applicationSettingsSlice";
 import { setComponentToLoad, setIsFormOpen, setCurrentUserRequest, setUserRequests, addSuccessMessage, addErrorMessage, clearMessages } from "../app/activitySlice";
+import type { RootState } from '../app/store';
 
 const UserRequests = ({ processTransactionUserRequest }) => {
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const applicationVersion = useSelector(state => state.applicationSettings.applicationVersion);
-  const baseURL = useSelector(state => state.applicationSettings.baseURL);
-  // const baseURLApplied = useSelector(state => state.applicationSettings.baseURLApplied);
-  const browserData = useSelector(state => state.applicationSettings.browserData);
-  const computerLog = useSelector(state => state.applicationSettings.computerLog);
-  const userIdentifier = useSelector(state => state.applicationSettings.userIdentifier);
-  const demonstrationMode = useSelector(state => state.activity.demonstrationMode);
-  const environmentMode = useSelector(state => state.applicationSettings.environmentMode);
-  const databaseAvailable = useSelector(state => state.applicationSettings.databaseAvailable);
-  // const userTokenExpired = useSelector(state => state.applicationSettings.userTokenExpired);
+  const applicationVersion = useAppSelector((state: RootState) => state.applicationSettings.applicationVersion);
+  const baseURL = useAppSelector((state: RootState) => state.applicationSettings.baseURL);
+  // const baseURLApplied = useAppSelector((state: RootState) => state.applicationSettings.baseURLApplied);
+  // const browserData = useAppSelector((state: RootState) => state.applicationSettings.browserData);
+  const computerLog = useAppSelector((state: RootState) => state.applicationSettings.computerLog);
+  const userIdentifier = useAppSelector((state: RootState) => state.applicationSettings.userIdentifier);
+  const demonstrationMode = useAppSelector((state: RootState) => state.applicationSettings.demonstrationMode);
+  const environmentMode = useAppSelector((state: RootState) => state.applicationSettings.environmentMode);
+  const databaseAvailable = useAppSelector((state: RootState) => state.applicationSettings.databaseAvailable);
+  // const userTokenExpired = useAppSelector((state: RootState) => state.applicationSettings.userTokenExpired);
 
-  const loggedInUser = useSelector(state => state.activity.loggedInUser);
-  const sessionToken = useSelector(state => state.activity.sessionToken);
+  const loggedInUser = useAppSelector((state: RootState) => state.activity.loggedInUser);
+  const sessionToken = useAppSelector((state: RootState) => state.activity.sessionToken);
 
-  const sosAssistantUserRequests = useSelector(state => state.activity.sosAssistantUserRequests);
-  // const sosAssistantUserApplications = useSelector(state => state.activity.sosAssistantUserApplications);
-  // const requestTypes = useSelector(state => state.activity.requestTypes);
-  // const partners = useSelector(state => state.activity.partners);
-  const currentPartners = useSelector(state => state.activity.currentPartners);
-  // const partnerSites = useSelector(state => state.activity.partnerSites);
-  const currentPartnerSites = useSelector(state => state.activity.currentPartnerSites);
-  // const associatedData = useSelector(state => state.activity.associatedData);
+  const sosAssistantUserRequests = useAppSelector((state: RootState) => state.activity.sosAssistantUserRequests);
+  // const sosAssistantUserApplications = useAppSelector((state: RootState) => state.activity.sosAssistantUserApplications);
+  // const requestTypes = useAppSelector((state: RootState) => state.activity.requestTypes);
+  // const partners = useAppSelector((state: RootState) => state.activity.partners);
+  const currentPartners = useAppSelector((state: RootState) => state.activity.currentPartners);
+  // const partnerSites = useAppSelector((state: RootState) => state.activity.partnerSites);
+  const currentPartnerSites = useAppSelector((state: RootState) => state.activity.currentPartnerSites);
+  // const associatedData = useAppSelector((state: RootState) => state.activity.associatedData);
 
-  const currentUserRequest = useSelector(state => state.activity.currentUserRequest);
-  // const currentUserRequestID = useSelector(state => state.activity.currentUserRequestID);
+  const currentUserRequest = useAppSelector((state: RootState) => state.activity.currentUserRequest);
+  // const currentUserRequestID = useAppSelector((state: RootState) => state.activity.currentUserRequestID);
 
   // * Search/filters -- 05/07/2024 JH
-  const [ddPartnerID, setDdPartnerID] = useState("");
-  const [ddPartnerSiteID, setDdPartnerSiteID] = useState("");
-  const [ddRequestStatus, setDdRequestStatus] = useState("Submitted");
+  const [ddPartnerID, setDdPartnerID] = useState<any>(null); // TODO type -- 09/18/2025 JH
+  const [ddPartnerSiteID, setDdPartnerSiteID] = useState<any>(null); // TODO type -- 09/18/2025 JH
+  const [ddRequestStatus, setDdRequestStatus] = useState<string>("Submitted");
 
-  const [currentUserRequests, setCurrentUserRequests] = useState([]);
+  const [currentUserRequests, setCurrentUserRequests] = useState<Record<string, unknown>[]>([]);
 
   const [noResultsDisplay, setNoResultsDisplay] = useState(false);
 
@@ -84,7 +85,7 @@ const UserRequests = ({ processTransactionUserRequest }) => {
 
       let operation = "Attempted Page Visit";
 
-      addLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, href: window.location.href, applicationVersion, browserData: JSON.stringify(browserData), transactionData: { loggedInUser, computerLog }, dateEntered: getDateTime() });
+      addLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, href: window.location.href, applicationVersion, browserData: JSON.stringify(getBrowserData()), transactionData: { loggedInUser, computerLog }, dateEntered: getDateTime() });
 
       dispatch(setComponentToLoad(""));
 
@@ -163,10 +164,10 @@ const UserRequests = ({ processTransactionUserRequest }) => {
       dispatch(setUserRequests([]));
       setCurrentUserRequests([]);
 
-      let url = `${baseURL}sosAssistantUsers/sosAssistantUserRequests/`;
-      let response = "";
-      let data = "";
-      let operation = "Get SOS Assistant User Requests";
+      let url: string = `${baseURL}sosAssistantUsers/sosAssistantUserRequests/`;
+      let response: any = "";
+      let data: any = "";
+      let operation: string = "Get SOS Assistant User Requests";
 
       fetch(url, {
         method: "GET",
@@ -280,7 +281,7 @@ const UserRequests = ({ processTransactionUserRequest }) => {
 
                   <label htmlFor="ddPartnerSiteID">Partner Site</label>
 
-                  <select className="form-control" type="select" id="ddPartnerSiteID" value={ddPartnerSiteID} onChange={(event) => { setDdPartnerSiteID(event.target.value); }}>
+                  <select className="form-control" id="ddPartnerSiteID" value={ddPartnerSiteID} onChange={(event) => { setDdPartnerSiteID(parseInt(event.target.value)); }}>
 
                     <option value="">Select Partner Site</option>
 
@@ -290,7 +291,11 @@ const UserRequests = ({ processTransactionUserRequest }) => {
 
                         {/* // * The commenting out of key={partnerSite.partnerSiteID} is not a mistake. Please leave this in place until some questions with the underlying data are resolved. -- 06/23/2023 MF */}
 
-                        {currentPartnerSites.map((partnerSite, index) => {
+                        {currentPartnerSites.map((
+                          // TODO type -- 09/18/2025 JH
+                          partnerSite: any,
+                          index: number
+                        ) => {
 
                           let partnerCityState = !isEmpty(partnerSite.city) && !isEmpty(partnerSite.state) ? "(" + partnerSite.city + ", " + partnerSite.state + ")" : "";
 
@@ -310,7 +315,7 @@ const UserRequests = ({ processTransactionUserRequest }) => {
 
                 <FormDropdown formInputID="ddRequestStatus" labelText="Request Status" placeholderText="Submitted" isRequired={false} optionData={[{ requestStatusValue: "Completed", requestStatusText: "Completed" }, { requestStatusValue: "All", requestStatusText: "All" }]} optionID="requestStatusValue" optionText={[{ type: "property", text: "requestStatusText" }]} inputValue={ddRequestStatus} updateValue={setDdRequestStatus} />
 
-                <button type="button" className="btn btn-dark-gray clear-search-button" onClick={() => { setDdPartnerID(""); setDdPartnerSiteID(""); setDdRequestStatus("Submitted"); setSortProperty(""); setSortDirection(""); }}>Clear Search</button>
+                <button type="button" className="btn btn-dark-gray clear-search-button" onClick={() => { setDdPartnerID(null); setDdPartnerSiteID(null); setDdRequestStatus("Submitted"); setSortProperty(""); setSortDirection(""); }}>Clear Search</button>
 
               </div>
 
@@ -363,7 +368,9 @@ const UserRequests = ({ processTransactionUserRequest }) => {
 
                   <>
 
-                    {currentUserRequests.map((userRequest) => {
+                    {currentUserRequests.map((
+                      userRequest: any // TODO type -- 09/18/2025 JH
+                    ) => {
 
                       return (
                         <tr key={userRequest.sosAssistantUserRequestID} className="clickable-table-row" onClick={() => { window.scrollTo(0, 0); dispatch(setCurrentUserRequest(userRequest)); }}>

@@ -1,37 +1,44 @@
 import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppSelector, useAppDispatch } from "../app/hooks";
 import { DialogBoxConfirmation, FormInput, useDialogBoxConfirmation } from "shared-components";
-import { isEmpty, getDateTime, isNonEmptyArray, getFirstItem, convertSpecialCharacters, convertNullEmptyString, formatTrim, addLog, addErrorLog, allowLogging } from "shared-functions";
+import { isEmpty, getDateTime, isNonEmptyArray, getFirstItem, convertSpecialCharacters, convertNullEmptyString, formatTrim, addLog, addErrorLog, allowLogging, getBrowserData } from "shared-functions";
 import { sessionTokenName, setFetchAuthorization } from "../utilities/applicationFunctions";
 import { setDatabaseAvailable, setUserTokenExpired, setFetchDataSOSAssistantUserApplications } from "../app/applicationSettingsSlice";
 import { setComponentToLoad, setIsFormOpen, addErrorMessage, clearMessages } from "../app/activitySlice";
+import type { RootState } from '../app/store';
+
+type InlineErrors = {
+  txtApplicationName: string;
+} | null;
 
 const UserApplications = () => {
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const applicationVersion = useSelector(state => state.applicationSettings.applicationVersion);
-  const baseURL = useSelector(state => state.applicationSettings.baseURL);
-  // const baseURLApplied = useSelector(state => state.applicationSettings.baseURLApplied);
-  const browserData = useSelector(state => state.applicationSettings.browserData);
-  const computerLog = useSelector(state => state.applicationSettings.computerLog);
-  const userIdentifier = useSelector(state => state.applicationSettings.userIdentifier);
-  const demonstrationMode = useSelector(state => state.activity.demonstrationMode);
-  const environmentMode = useSelector(state => state.applicationSettings.environmentMode);
-  const databaseAvailable = useSelector(state => state.applicationSettings.databaseAvailable);
+  const applicationVersion = useAppSelector((state: RootState) => state.applicationSettings.applicationVersion);
+  const baseURL = useAppSelector((state: RootState) => state.applicationSettings.baseURL);
+  // const baseURLApplied = useAppSelector((state: RootState) => state.applicationSettings.baseURLApplied);
+  // const browserData = useAppSelector((state: RootState) => state.applicationSettings.browserData);
+  const computerLog = useAppSelector((state: RootState) => state.applicationSettings.computerLog);
+  const userIdentifier = useAppSelector((state: RootState) => state.applicationSettings.userIdentifier);
+  const demonstrationMode = useAppSelector((state: RootState) => state.applicationSettings.demonstrationMode);
+  const environmentMode = useAppSelector((state: RootState) => state.applicationSettings.environmentMode);
+  const databaseAvailable = useAppSelector((state: RootState) => state.applicationSettings.databaseAvailable);
 
-  const loggedInUser = useSelector(state => state.activity.loggedInUser);
-  const sessionToken = useSelector(state => state.activity.sessionToken);
+  const loggedInUser = useAppSelector((state: RootState) => state.activity.loggedInUser);
+  const sessionToken = useAppSelector((state: RootState) => state.activity.sessionToken);
 
-  const isFormOpen = useSelector(state => state.activity.isFormOpen);
+  const isFormOpen = useAppSelector((state: RootState) => state.activity.isFormOpen);
 
-  const sosAssistantUserApplications = useSelector(state => state.activity.sosAssistantUserApplications);
+  const sosAssistantUserApplications = useAppSelector((state: RootState) => state.activity.sosAssistantUserApplications);
 
-  const [currentUserApplication, setCurrentUserApplication] = useState({});
-  const [applicationID, setApplicationID] = useState(null);
-  const [txtApplicationName, setTxtApplicationName] = useState("");
+  const [currentUserApplication, setCurrentUserApplication] = useState<any>({}); // TODO type -- 09/18/2025 JH
+  const [applicationID, setApplicationID] = useState<string | number>(null);
+  const [txtApplicationName, setTxtApplicationName] = useState<string>("");
 
-  const [inlineErrors, setInlineErrors] = useState({});
+  const [inlineErrors, setInlineErrors] = useState<InlineErrors>({
+    txtApplicationName: ""
+  });
 
   const [processTransactionValue, confirmationDialogBoxOpen, confirmationDialogBoxSize, confirmationDialogBoxTitle, confirmationDialogBoxContent, confirmationDialogBoxType, confirmationDialogBoxContinue, confirmAction, deleteRecord, hardDeleteRecord, closeDeleteDialogBox, setConfirmationDialogBoxContinue, setProcessTransactionValue] = useDialogBoxConfirmation();
 
@@ -45,7 +52,7 @@ const UserApplications = () => {
 
       let operation = "Attempted Page Visit";
 
-      addLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, href: window.location.href, applicationVersion, browserData: JSON.stringify(browserData), transactionData: { loggedInUser, computerLog }, dateEntered: getDateTime() });
+      addLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, href: window.location.href, applicationVersion, browserData: JSON.stringify(getBrowserData()), transactionData: { loggedInUser, computerLog }, dateEntered: getDateTime() });
 
       dispatch(setComponentToLoad(""));
 
@@ -96,7 +103,9 @@ const UserApplications = () => {
   }, [txtApplicationName, inlineErrors]);
 
 
-  const loadRecord = (newCurrentUserApplication) => {
+  const loadRecord = (
+    newCurrentUserApplication: any // TODO type -- 09/18/2025 JH
+  ) => {
 
     if (!isEmpty(newCurrentUserApplication)) {
 
@@ -119,13 +128,15 @@ const UserApplications = () => {
 
     dispatch(clearMessages());
 
-    let operation = "Save Record";
+    let operation: string = "Save Record";
 
-    let transactionValid = false;
-    let errorMessages = "";
-    let formatErrorMessages = "";
+    let transactionValid: boolean = false;
+    let errorMessages: string = "";
+    let formatErrorMessages: string = "";
 
-    let inlineErrorMessages = {};
+    let inlineErrorMessages: InlineErrors = {
+      txtApplicationName: ""
+    };
 
     if (isEmpty(formatTrim(txtApplicationName))) {
 
@@ -214,17 +225,17 @@ const UserApplications = () => {
   };
 
 
-  const processTransaction = (transactionType) => {
+  const processTransaction = (transactionType: string) => {
 
-    let url = `${baseURL}sosAssistantUserApplications/`;
-    let response = "";
-    let data = "";
-    let operation = "";
-    let method = "";
-    let previousRecord = currentUserApplication;
-    let primaryKeyID = applicationID;
+    let url: string = `${baseURL}sosAssistantUserApplications/`;
+    let response: any = "";
+    let data: any = "";
+    let operation: string = "";
+    let method: string = "";
+    let previousRecord: any = currentUserApplication; // TODO type -- 09/18/2025 JH
+    let primaryKeyID: string | number = applicationID;
 
-    let recordObject = {
+    let recordObject: Record<string, unknown> = {
       applicationName: convertNullEmptyString(formatTrim(txtApplicationName))
     };
 
@@ -300,7 +311,7 @@ const UserApplications = () => {
 
             dispatch(setDatabaseAvailable(true));
 
-            addLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, href: window.location.href, applicationVersion, browserData: JSON.stringify(browserData), transactionData: { dataRecord, previousRecord, loggedInUser, computerLog }, dateEntered: getDateTime() });
+            addLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, href: window.location.href, applicationVersion, browserData: JSON.stringify(getBrowserData()), transactionData: { dataRecord, previousRecord, loggedInUser, computerLog }, dateEntered: getDateTime() });
 
             dispatch(setFetchDataSOSAssistantUserApplications(true));
 
@@ -362,7 +373,9 @@ const UserApplications = () => {
               </thead>
               <tbody>
 
-                {sosAssistantUserApplications.map((sosAssistantUserApplication) => {
+                {sosAssistantUserApplications.map((
+                  sosAssistantUserApplication: any // TODO type -- 09/18/2025 JH
+                ) => {
 
                   return (
                     <tr key={sosAssistantUserApplication.applicationID} className="clickable-table-row" onClick={() => { window.scrollTo(0, 0); setCurrentUserApplication(sosAssistantUserApplication); dispatch(setIsFormOpen(true)); }}>
@@ -395,9 +408,9 @@ const UserApplications = () => {
 
             <button type="button" className="btn btn-primary" onClick={() => { saveRecord(); }}>Save</button>
 
-            <button type="button" className="btn btn-info" onClick={() => { loadRecord(currentUserApplication); dispatch(clearMessages()); setInlineErrors({}); }}>Reset</button>
+            <button type="button" className="btn btn-info" onClick={() => { loadRecord(currentUserApplication); dispatch(clearMessages()); setInlineErrors({ txtApplicationName: "" }); }}>Reset</button>
 
-            <button type="button" className="btn btn-outline" onClick={() => { setCurrentUserApplication({}); dispatch(setIsFormOpen(false)); dispatch(clearMessages()); setInlineErrors({}); }}>Cancel</button>
+            <button type="button" className="btn btn-outline" onClick={() => { setCurrentUserApplication({}); dispatch(setIsFormOpen(false)); dispatch(clearMessages()); setInlineErrors({ txtApplicationName: "" }); }}>Cancel</button>
 
             {!isEmpty(applicationID) ?
 
