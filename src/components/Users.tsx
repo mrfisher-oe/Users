@@ -675,7 +675,7 @@ const Users = () => {
     let operation: string = "";
     let method: string = "";
     let previousRecord: User = currentUser;
-    let primaryKeyID: string | number = userID; // TODO string or number? -- 09/15/2025 JH
+    let primaryKeyID: number = userID;
 
     let recordObject: User = {
       username: convertNullEmptyString(formatTrim(txtUsername)),

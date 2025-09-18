@@ -1,5 +1,5 @@
 export type User = {
-  userID?: string | number; // TODO string or number? -- 09/15/2025 JH
+  userID?: number;
   username: string;
   firstName: string;
   lastName: string;
@@ -12,6 +12,6 @@ export type User = {
   active?: boolean;
   userRole?: string;
   lastLogin?: string;
-  updatedBy?: string | number; // TODO string or number? -- 09/15/2025 JH
+  updatedBy?: number;
   isSystemAdministrator?: boolean;
 } | null;
