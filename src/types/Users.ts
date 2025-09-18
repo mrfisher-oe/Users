@@ -1,10 +1,10 @@
 type ApplicationID = {
-  userID: string | number;
-  applicationID: Record<string, unknown>;
+  userID: number;
+  applicationID: Record<number, unknown>;
 };
 
 export interface User {
-  userID?: string | number; // TODO string or number? -- 09/15/2025 JH
+  userID?: number;
   username: string;
   firstName: string;
   lastName: string;
@@ -17,14 +17,14 @@ export interface User {
   active?: boolean;
   userRole?: string;
   lastLogin?: string;
-  updatedBy?: string | number; // TODO string or number? -- 09/15/2025 JH
+  updatedBy?: number;
   isSystemAdministrator?: boolean;
   isAdministrator?: boolean;
-  partnerSiteID?: string | number; // TODO string or number? -- 09/15/2025 JH
-  applicationID?: ApplicationID[]; // TODO string or number? -- 09/15/2025 JH
+  partnerSiteID?: number;
+  applicationID?: ApplicationID[];
 };
 
 export interface UserRequest extends User {
-  sosAssistantUserRequestID?: string | number;
+  sosAssistantUserRequestID?: number;
   positionName?: string;
 }

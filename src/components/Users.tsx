@@ -79,7 +79,7 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
   const [txtRequestedBy, setTxtRequestedBy] = useState<User["requestedBy"]>("");
   const [txtRequestDate, setTxtRequestDate] = useState<User["requestDate"]>("");
   const [txtNotes, setTxtNotes] = useState<User["notes"]>("");
-  const [ddPartnerSiteID, setDdPartnerSiteID] = useState<User["partnerSiteID"]>("");
+  const [ddPartnerSiteID, setDdPartnerSiteID] = useState<User["partnerSiteID"]>(0);
   const [cbxApplicationID, setCbxApplicationID] = useState<User["applicationID"]>([]);
 
   const [inlineErrors, setInlineErrors] = useState<InlineErrors>({
@@ -580,7 +580,7 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
       setTxtRequestedBy("");
       setTxtRequestDate("");
       setTxtNotes("");
-      setDdPartnerSiteID("");
+      setDdPartnerSiteID(null);
       setCbxApplicationID([]);
 
     };
@@ -830,8 +830,7 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
     let operation: string = "";
     let method: string = "";
     let previousRecord: User = currentUser;
-    let primaryKeyID: string | number = userID; // TODO string or number? -- 09/15/2025 JH
-
+    let primaryKeyID: number = userID;
     let recordObject: User = {
       username: convertNullEmptyString(formatTrim(txtUsername)),
       firstName: convertNullEmptyString(formatTrim(txtFirstName)),
