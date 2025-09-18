@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "../app/hooks";
 import { FormInput } from "shared-components";
-import { isEmpty, getDateTime, formatTrim, addLog, addErrorLog, showDevelopment, allowLogging } from "shared-functions";
+import { isEmpty, getDateTime, formatTrim, addLog, addErrorLog, showDevelopment, allowLogging, getBrowserData } from "shared-functions";
 import { sessionTokenName, setFetchAuthorization } from "../utilities/applicationFunctions";
 import { setDatabaseAvailable, setUserTokenExpired } from "../app/applicationSettingsSlice";
 import { setLoggedInUser, setSessionToken, setComponentToLoad, addErrorMessage, clearMessages } from "../app/activitySlice";
@@ -23,7 +23,6 @@ const Login = ({ invalidURL }: LoginProps) => {
   const applicationVersion = useAppSelector((state: RootState) => state.applicationSettings.applicationVersion);
   const baseURL = useAppSelector((state: RootState) => state.applicationSettings.baseURL);
   const baseURLApplied = useAppSelector((state: RootState) => state.applicationSettings.baseURLApplied);
-  const browserData = useAppSelector((state: RootState) => state.applicationSettings.browserData);
   const computerLog = useAppSelector((state: RootState) => state.applicationSettings.computerLog);
   const userIdentifier = useAppSelector((state: RootState) => state.applicationSettings.userIdentifier);
   const demonstrationMode = useAppSelector((state: RootState) => state.applicationSettings.demonstrationMode);
@@ -348,7 +347,7 @@ const Login = ({ invalidURL }: LoginProps) => {
       //   // dispatch(addErrorMessage(operation));
       //   dispatch(addErrorMessage(`${operation}: ${message}`));
 
-      //   addLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, href: window.location.href, applicationVersion, browserData: JSON.stringify(browserData), transactionData: { message, loggedInUser, computerLog }, dateEntered: getDateTime() });
+      //   addLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, href: window.location.href, applicationVersion, browserData: JSON.stringify(getBrowserData()), transactionData: { message, loggedInUser, computerLog }, dateEntered: getDateTime() });
 
     };
 
@@ -553,7 +552,7 @@ const Login = ({ invalidURL }: LoginProps) => {
       // addErrorMessage(operation);
       dispatch(addErrorMessage(`${operation}: ${message}`));
 
-      addLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, href: window.location.href, applicationVersion, browserData: JSON.stringify(browserData), transactionData: { message, loggedInUser, computerLog }, dateEntered: getDateTime() });
+      addLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, href: window.location.href, applicationVersion, browserData: JSON.stringify(getBrowserData()), transactionData: { message, loggedInUser, computerLog }, dateEntered: getDateTime() });
 
     };
 
