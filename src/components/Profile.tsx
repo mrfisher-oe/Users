@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "../app/hooks";
 import { FormInput } from "shared-components";
-import { emailFormat, isEmpty, getDateTime, getFirstItem, convertSpecialCharacters, convertNullEmptyString, formatTrim, addLog, addErrorLog, allowLogging } from "shared-functions";
+import { emailFormat, isEmpty, getDateTime, getFirstItem, convertSpecialCharacters, convertNullEmptyString, formatTrim, addLog, addErrorLog, allowLogging, getBrowserData } from "shared-functions";
 import { sessionTokenName, setFetchAuthorization } from "../utilities/applicationFunctions";
 import { setDatabaseAvailable, setUserTokenExpired } from "../app/applicationSettingsSlice";
 import { setLoggedInUser, setComponentToLoad, addSuccessMessage, addErrorMessage, clearMessages } from "../app/activitySlice";
@@ -20,7 +20,6 @@ const Profile = () => {
   const applicationVersion = useAppSelector((state: RootState) => state.applicationSettings.applicationVersion);
   const baseURL = useAppSelector((state: RootState) => state.applicationSettings.baseURL);
   // const baseURLApplied = useAppSelector((state: RootState) => state.applicationSettings.baseURLApplied);
-  const browserData = useAppSelector((state: RootState) => state.applicationSettings.browserData);
   const computerLog = useAppSelector((state: RootState) => state.applicationSettings.computerLog);
   const userIdentifier = useAppSelector((state: RootState) => state.applicationSettings.userIdentifier);
   const demonstrationMode = useSelector(state => state.applicationSettings.demonstrationMode);
@@ -55,7 +54,7 @@ const Profile = () => {
 
       let operation = "Attempted Page Visit";
 
-      addLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, href: window.location.href, applicationVersion, browserData: JSON.stringify(browserData), transactionData: { loggedInUser, computerLog }, dateEntered: getDateTime() });
+      addLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, href: window.location.href, applicationVersion, browserData: JSON.stringify(getBrowserData()), transactionData: { loggedInUser, computerLog }, dateEntered: getDateTime() });
 
       dispatch(setComponentToLoad(""));
 
@@ -394,7 +393,7 @@ const Profile = () => {
 
             dispatch(setLoggedInUser(newLoggedInUser));
 
-            addLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, href: window.location.href, applicationVersion, browserData: JSON.stringify(browserData), transactionData: { dataRecord, previousRecord, loggedInUser, computerLog }, dateEntered: getDateTime() });
+            addLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, href: window.location.href, applicationVersion, browserData: JSON.stringify(getBrowserData()), transactionData: { dataRecord, previousRecord, loggedInUser, computerLog }, dateEntered: getDateTime() });
 
             dispatch(addSuccessMessage(`${operation}: ${data.message}`));
 

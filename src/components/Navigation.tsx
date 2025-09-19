@@ -16,7 +16,6 @@ const Navigation = () => {
   // const applicationVersion = useAppSelector((state: RootState) => state.applicationSettings.applicationVersion);
   // const baseURL = useAppSelector((state: RootState) => state.applicationSettings.baseURL);
   // const baseURLApplied = useAppSelector((state: RootState) => state.applicationSettings.baseURLApplied);
-  // const browserData = useAppSelector((state: RootState) => state.applicationSettings.browserData);
   // const computerLog = useAppSelector((state: RootState) => state.applicationSettings.computerLog);
   // const userIdentifier = useAppSelector((state: RootState) => state.applicationSettings.userIdentifier);
   // const demonstrationMode = useAppSelector((state: RootState) => state.applicationSettings.demonstrationMode);

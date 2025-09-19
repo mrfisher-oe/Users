@@ -4,9 +4,9 @@ import { /* AuthenticatedTemplate, UnauthenticatedTemplate, */ useIsAuthenticate
 import { InteractionStatus } from "@azure/msal-browser";
 // import { msalInstance } from "./index";
 import { AlertPopup, Footer, Header } from "shared-components";
-import { isEmpty, getDateTime, isEmptyArray, formatTrim, getQueryStringData, addLog, addErrorLog, addComputerLog, parse, isLocalDevelopment, showDevelopment, showPlayground, showAuthentication, allowLogging, resolveBaseURL, resolveRedirectURL } from "shared-functions";
+import { isEmpty, getDateTime, isNonEmptyArray, formatTrim, getFirstItem, convertSpecialCharacters, getQueryStringData, addLog, addErrorLog, addComputerLog, parse, getBrowserData, isLocalDevelopment, showDevelopment, showPlayground, showAuthentication, allowLogging, resolveBaseURL, resolveRedirectURL } from "shared-functions";
 import { loginRequest } from "./utilities/authenticationConfig";
-import { setApplicationVersion, setCopyrightYear, setBaseURL, setBaseURLApplied, /* setParametersURL, */ setDemonstrationMode, setEnvironmentMode, setComputerLog, setUserIdentifier, setDatabaseAvailable, setUserTokenExpired, addBrowserData, setLocationLogged } from "./app/applicationSettingsSlice";
+import { setApplicationVersion, setCopyrightYear, setBaseURL, setBaseURLApplied, /* setParametersURL, */ setDemonstrationMode, setEnvironmentMode, setComputerLog, setUserIdentifier, setDatabaseAvailable, setUserTokenExpired, setLocationLogged } from "./app/applicationSettingsSlice";
 import { setComponentToLoad, addSuccessMessage, addErrorMessage, clearMessages } from "./app/activitySlice";
 import { setFetchAuthorization /* , callMsGraph */ } from "./utilities/applicationFunctions";
 import type { AlertItem, AlertType } from "./types/Alert";
@@ -17,6 +17,9 @@ import Messages from "./components/Messages";
 import Navigation from "./components/Navigation";
 import Profile from "./components/Profile";
 import Users from "./components/Users";
+import UserApplications from "./components/UserApplications";
+import UserRequest from "./components/UserRequest";
+import UserRequests from "./components/UserRequests";
 
 type AppProps = {
   applicationVersion: string;
@@ -123,7 +126,7 @@ const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps)
 
     };
 
-    setBrowserData({ appCodeName: navigator.appCodeName, appName: navigator.appName, appVersion: navigator.appVersion, cookieEnabled: navigator.cookieEnabled, language: navigator.language, onLine: navigator.onLine, platform: navigator.platform, product: navigator.product, userAgent: navigator.userAgent });
+    // setBrowserData({ appCodeName: navigator.appCodeName, appName: navigator.appName, appVersion: navigator.appVersion, cookieEnabled: navigator.cookieEnabled, language: navigator.language, onLine: navigator.onLine, platform: navigator.platform, product: navigator.product, userAgent: navigator.userAgent });
 
     if (locationLogged !== true && allowLogging()) {
 
@@ -254,7 +257,7 @@ const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps)
         learningObjectTitle: applicationName, /* title, */
         href,
         applicationVersion,
-        browserData: JSON.stringify(browserData),
+        browserData: JSON.stringify(getBrowserData()),
 
         lastAccessed: getDateTime(),
 
@@ -286,7 +289,7 @@ const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps)
         learningObjectTitle: applicationName, /* title, */
         href,
         applicationVersion,
-        browserData: JSON.stringify(browserData),
+        browserData: JSON.stringify(getBrowserData()),
 
         lastAccessed: getDateTime(),
 
