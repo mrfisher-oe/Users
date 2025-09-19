@@ -35,7 +35,6 @@ const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps)
   // const applicationVersion = useAppSelector((state: RootState) => state.applicationSettings.applicationVersion);
   const baseURL = useAppSelector((state: RootState) => state.applicationSettings.baseURL);
   // const baseURLApplied = useAppSelector((state: RootState) => state.applicationSettings.baseURLApplied);
-  // const browserData = useAppSelector((state: RootState) => state.applicationSettings.browserData);
   const computerLog = useAppSelector((state: RootState) => state.applicationSettings.computerLog);
   const userIdentifier = useAppSelector((state: RootState) => state.applicationSettings.userIdentifier);
   const demonstrationMode = useAppSelector((state: RootState) => state.applicationSettings.demonstrationMode);
@@ -125,8 +124,6 @@ const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps)
       dispatch(setEnvironmentMode(environmentModeQueryString));
 
     };
-
-    // setBrowserData({ appCodeName: navigator.appCodeName, appName: navigator.appName, appVersion: navigator.appVersion, cookieEnabled: navigator.cookieEnabled, language: navigator.language, onLine: navigator.onLine, platform: navigator.platform, product: navigator.product, userAgent: navigator.userAgent });
 
     if (locationLogged !== true && allowLogging()) {
 
