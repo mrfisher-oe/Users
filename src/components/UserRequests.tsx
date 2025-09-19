@@ -75,22 +75,23 @@ const UserRequests = ({ processTransactionUserRequest }) => {
   }, [processTransactionValue]);
 
 
-  useEffect(() => {
+  // TODO: These will need to be rewritten to match the new data structures. -- 09/19/2025 MF
+  // useEffect(() => {
 
-    let currentSessionToken = localStorage.getItem(sessionTokenName);
+  //   let currentSessionToken = localStorage.getItem(sessionTokenName);
 
-    // * When going directly to the page in a new tab or when refreshing, the loggedInUser isn't available yet in Redux so currentSessionToken is checked instead. -- 06/28/2024 MF
-    if (isEmpty(currentSessionToken) || (!isEmpty(loggedInUser) && !loggedInUser.isAdministrator)) {
+  //   // * When going directly to the page in a new tab or when refreshing, the loggedInUser isn't available yet in Redux so currentSessionToken is checked instead. -- 06/28/2024 MF
+  //   if (isEmpty(currentSessionToken) || (!isEmpty(loggedInUser) && !loggedInUser.isAdministrator)) {
 
-      let operation = "Attempted Page Visit";
+  //     let operation = "Attempted Page Visit";
 
-      addLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, href: window.location.href, applicationVersion, browserData: JSON.stringify(getBrowserData()), transactionData: { loggedInUser, computerLog }, dateEntered: getDateTime() });
+  //     addLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, href: window.location.href, applicationVersion, browserData: JSON.stringify(getBrowserData()), transactionData: { loggedInUser, computerLog }, dateEntered: getDateTime() });
 
-      dispatch(setComponentToLoad(""));
+  //     dispatch(setComponentToLoad(""));
 
-    };
+  //   };
 
-  }, [loggedInUser]);
+  // }, [loggedInUser]);
 
 
   useEffect(() => {

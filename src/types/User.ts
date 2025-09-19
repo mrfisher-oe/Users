@@ -25,11 +25,18 @@ export interface User {
   createDate?: string;
   updateDate?: string;
   inactiveDate?: string;
-  applicationIDs?: ApplicationIDs[];
-  applications?: Applications[];
+  // applicationIDs?: ApplicationIDs[];
+  // applications?: Applications[];
 };
 
 export interface UserRequest extends User {
   userRequestID?: number;
   positionName?: string;
-}
+};
+
+// export type LoggedInUser extends User {
+// isSystemAdministrator: boolean;
+// isAdministrator: boolean;
+// isExtendedRealitySimulationSpecialist: boolean;
+// isDirectorSimulationAndIntegratedSimulationOperations: boolean;
+// };

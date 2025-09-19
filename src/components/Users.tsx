@@ -13,9 +13,7 @@ type InlineErrors = {
   txtFirstName: string;
   txtLastName: string;
   txtEmail: string;
-  ddUserRole: string;
   ddPartnerSiteID: string;
-  cbxApplicationID: string;
 } | null;
 
 type UserProps = {
@@ -31,7 +29,7 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
   // const baseURLApplied = useAppSelector((state: RootState) => state.applicationSettings.baseURLApplied);
   const computerLog = useAppSelector((state: RootState) => state.applicationSettings.computerLog);
   const userIdentifier = useAppSelector((state: RootState) => state.applicationSettings.userIdentifier);
-  const demonstrationMode = useSelector(state => state.applicationSettings.demonstrationMode);
+  const demonstrationMode = useAppSelector((state: RootState) => state.applicationSettings.demonstrationMode);
   const environmentMode = useAppSelector((state: RootState) => state.applicationSettings.environmentMode);
   const databaseAvailable = useAppSelector((state: RootState) => state.applicationSettings.databaseAvailable);
   // const userTokenExpired = useAppSelector((state: RootState) => state.applicationSettings.userTokenExpired);
@@ -55,7 +53,6 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
 
   // * Search/filters -- 05/07/2024 JH
   const [txtSearch, setTxtSearch] = useState<string>("");
-  const [ddUserRoleFilter, setDdUserRoleFilter] = useState<string>("");
   const [ddActiveFilter, setDdActiveFilter] = useState<string>("true");
 
   const [noResultsDisplay, setNoResultsDisplay] = useState<boolean>(false);
@@ -75,21 +72,17 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
   const [txtLastName, setTxtLastName] = useState<User["lastName"]>("");
   const [txtEmail, setTxtEmail] = useState<User["email"]>("");
   const [txtPassword, setTxtPassword] = useState<User["password"]>("");
-  const [ddUserRole, setDdUserRole] = useState<User["userRoleID"]>("");
   const [txtRequestedBy, setTxtRequestedBy] = useState<User["requestedBy"]>("");
   const [txtRequestDate, setTxtRequestDate] = useState<User["requestDate"]>("");
   const [txtNotes, setTxtNotes] = useState<User["notes"]>("");
   const [ddPartnerSiteID, setDdPartnerSiteID] = useState<User["partnerSiteID"]>(0);
-  const [cbxApplicationID, setCbxApplicationID] = useState<User["applicationID"]>([]);
 
   const [inlineErrors, setInlineErrors] = useState<InlineErrors>({
     txtUsername: "",
     txtFirstName: "",
     txtLastName: "",
     txtEmail: "",
-    ddUserRole: "",
-    ddPartnerSiteID: "",
-    cbxApplicationID: ""
+    ddPartnerSiteID: ""
   });
 
   const [processTransactionValue, confirmationDialogBoxOpen, confirmationDialogBoxSize, confirmationDialogBoxTitle, confirmationDialogBoxContent, confirmationDialogBoxType, confirmationDialogBoxContinue, confirmAction, deleteRecord, hardDeleteRecord, closeDeleteDialogBox, setConfirmationDialogBoxContinue, setProcessTransactionValue] = useDialogBoxConfirmation();
@@ -104,22 +97,23 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
   }, []);
 
 
-  useEffect(() => {
+  // TODO: These will need to be rewritten to match the new data structures. -- 09/19/2025 MF
+  // useEffect(() => {
 
-    let currentSessionToken = localStorage.getItem(sessionTokenName);
+  //   let currentSessionToken = localStorage.getItem(sessionTokenName);
 
-    // * When going directly to the page in a new tab or when refreshing, the loggedInUser isn't available yet in Redux so currentSessionToken is checked instead. -- 06/28/2024 MF
-    if (isEmpty(currentSessionToken) || (!isEmpty(loggedInUser) && !loggedInUser.isSystemAdministrator)) {
+  //   // * When going directly to the page in a new tab or when refreshing, the loggedInUser isn't available yet in Redux so currentSessionToken is checked instead. -- 06/28/2024 MF
+  //   if (isEmpty(currentSessionToken) || (!isEmpty(loggedInUser) && !loggedInUser.isSystemAdministrator)) {
 
-      let operation = "Attempted Page Visit";
+  //     let operation = "Attempted Page Visit";
 
-      addLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, href: window.location.href, applicationVersion, browserData: JSON.stringify(getBrowserData()), transactionData: { loggedInUser, computerLog }, dateEntered: getDateTime() });
+  //     addLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, href: window.location.href, applicationVersion, browserData: JSON.stringify(getBrowserData()), transactionData: { loggedInUser, computerLog }, dateEntered: getDateTime() });
 
-      dispatch(setComponentToLoad(""));
+  //     dispatch(setComponentToLoad(""));
 
-    };
+  //   };
 
-  }, [loggedInUser]);
+  // }, [loggedInUser]);
 
 
   useEffect(() => {
@@ -134,16 +128,12 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
 
     if (!isEmpty(currentUserRequest) && isNonEmptyArray(userRoles)) {
 
-      let newUserRole = getFirstItem(userRoles.filter(userRole => userRole.userRole === currentUserRequest.positionName));
-      let newUserRoleID = !isEmpty(newUserRole) ? newUserRole.userRoleID : null;
-
       let newCurrentUser: User = {
         email: currentUserRequest.email,
         firstName: currentUserRequest.firstName,
         lastName: currentUserRequest.lastName,
         partnerSiteID: currentUserRequest.partnerSiteID,
         userID: null,
-        userRoleID: newUserRoleID,
         username: ""
       };
 
@@ -183,12 +173,6 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
 
       };
 
-      if (!isEmpty(ddUserRoleFilter)) {
-
-        combinedResults = combinedResults.filter((user) => formatToString(user.userRoleID) === ddUserRoleFilter);
-
-      };
-
       if (!isEmpty(ddActiveFilter)) {
 
         if (ddActiveFilter === "true") {
@@ -219,7 +203,7 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
 
     };
 
-  }, [users, txtSearch, ddUserRoleFilter, ddActiveFilter, sortProperty, sortDirection]);
+  }, [users, txtSearch, ddActiveFilter, sortProperty, sortDirection]);
 
 
   // * Clear inline error messages. -- 12/05/2023 JH
@@ -263,18 +247,9 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
 
       };
 
-      if (!isEmpty(inlineErrors.ddUserRole) && !isEmpty(ddUserRole)) {
-
-        setInlineErrors({
-          ...inlineErrors,
-          ddUserRole: ""
-        });
-
-      };
-
     };
 
-  }, [txtUsername, txtFirstName, txtLastName, txtEmail, ddUserRole, inlineErrors]);
+  }, [txtUsername, txtFirstName, txtLastName, txtEmail, inlineErrors]);
 
 
   const loadUsers = () => {
@@ -508,8 +483,6 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
 
               let applicationIDs = data.records.map((record) => formatToString(record.applicationID));
 
-              setCbxApplicationID(applicationIDs);
-
               dispatch(setDatabaseAvailable(true));
 
               // } else {
@@ -561,7 +534,6 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
       setTxtEmail(newCurrentUser.email);
       // setTxtPassword(newCurrentUser.password);
       setTxtPassword("");
-      setDdUserRole(newCurrentUser.userRoleID);
       setTxtRequestedBy(newCurrentUser.requestedBy);
       setTxtRequestDate(formatDate(newCurrentUser.requestDate));
       setTxtNotes(newCurrentUser.notes);
@@ -576,12 +548,10 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
       setTxtLastName("");
       setTxtEmail("");
       setTxtPassword("");
-      setDdUserRole("");
       setTxtRequestedBy("");
       setTxtRequestDate("");
       setTxtNotes("");
       setDdPartnerSiteID(null);
-      setCbxApplicationID([]);
 
     };
 
@@ -624,9 +594,7 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
       txtFirstName: "",
       txtLastName: "",
       txtEmail: "",
-      ddUserRole: "",
-      ddPartnerSiteID: "",
-      cbxApplicationID: ""
+      ddPartnerSiteID: ""
     };
 
     if (isEmpty(formatTrim(txtUsername))) {
@@ -707,18 +675,6 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
     //   errorMessages = `${errorMessages}, <strong>Password</strong>`;
 
     // };
-
-    if (isEmpty(formatTrim(ddUserRole))) {
-
-      // * Make sure that the user's Role was entered. -- 06/24/2021 MF
-      // errorMessages = `${errorMessages}, <strong>Role</strong>`;
-
-      inlineErrorMessages = {
-        ...inlineErrorMessages,
-        ddUserRole: "Please enter the <strong>Role</strong>."
-      };
-
-    };
 
     if (isEmpty(ddPartnerSiteID)) {
 
@@ -837,7 +793,6 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
       lastName: convertNullEmptyString(formatTrim(txtLastName)),
       email: convertNullEmptyString(formatTrim(txtEmail)),
       password: convertNullEmptyString(formatTrim(txtPassword)),
-      userRoleID: convertNullEmptyString(ddUserRole),
       partnerSiteID: convertNullEmptyString(ddPartnerSiteID),
       requestedBy: convertNullEmptyString(formatTrim(txtRequestedBy)),
       requestDate: convertNullEmptyString(formatTrim(txtRequestDate)),
@@ -927,7 +882,6 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
             // setTxtLastName(convertNullEmptyString(dataRecord.lastName));
             // setTxtEmail(convertNullEmptyString(dataRecord.email));
             // setTxtPassword(convertNullEmptyString(dataRecord.password));
-            // setDdUserRole(convertNullEmptyString(dataRecord.userRoleID));
             // setTxtRequestedBy(convertNullEmptyString(dataRecord.requestedBy));
             // setTxtRequestDate(convertNullEmptyString(dataRecord.requestDate));
             // setTxtNotes(convertNullEmptyString(dataRecord.notes));
@@ -971,16 +925,16 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
         window.scrollTo(0, 0);
 
       })
-      .then(results => {
+      // .then(results => {
 
-        if (data.transactionSuccess && !isEmpty(data.records)) {
+      //   if (data.transactionSuccess && !isEmpty(data.records)) {
 
-          // *Add the SOS Assistant User Applications records with the userID. -- 07/15/2024 MF
-          processUserApplications(primaryKeyID);
+      //     // *Add the SOS Assistant User Applications records with the userID. -- 07/15/2024 MF
+      //     processUserApplications(primaryKeyID);
 
-        };
+      //   };
 
-      })
+      // })
       .catch((error) => {
 
         // console.error(operation, "error", error);
@@ -998,108 +952,107 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
   };
 
 
-  const processUserApplications = (primaryKeyID: string | number) => {
+  // const processUserApplications = (primaryKeyID: string | number) => {
 
-    // * Update the SOS Assistant Users Applications in the database. -- 02/06/2025 EBG
+  //   // * Update the SOS Assistant Users Applications in the database. -- 02/06/2025 EBG
 
-    // * Causes the edit form to re-render after submission and the messages disappear before they can be viewed. -- 05/07/2024 MF
-    // dispatch(clearMessages());
+  //   // * Causes the edit form to re-render after submission and the messages disappear before they can be viewed. -- 05/07/2024 MF
+  //   // dispatch(clearMessages());
 
-    let url: string = `${baseURL}users/usersApplications/${primaryKeyID}/`;
-    let response: any = "";
-    let data: any = "";
-    let operation: string = "";
-    let method: string = "";
-    // let previousRecord = currentSimulation;
-    // let primaryKeyID = currentSimulationID;
+  //   let url: string = `${baseURL}users/usersApplications/${primaryKeyID}/`;
+  //   let response: any = "";
+  //   let data: any = "";
+  //   let operation: string = "";
+  //   let method: string = "";
+  //   // let previousRecord = currentSimulation;
+  //   // let primaryKeyID = currentSimulationID;
 
-    // ? What the heck is this type? It looks like an array, but how does recordObject.active = true work? -- 09/18/2025 JH
-    // let recordObject: User["applicationID"] = cbxApplicationID.map((application) => ({ userID: primaryKeyID, applicationID: application }));
-    let recordObject: any = cbxApplicationID.map((application) => ({ userID: primaryKeyID, applicationID: application }));
+  //   // ? What the heck is this type? It looks like an array, but how does recordObject.active = true work? -- 09/18/2025 JH
+  //   // let recordObject: User["applicationID"] = cbxApplicationID.map((application) => ({ userID: primaryKeyID, applicationID: application }));
+  //   let recordObject: any = cbxApplicationID.map((application) => ({ userID: primaryKeyID, applicationID: application }));
 
-    // * Add the record. -- 02/06/2025 EBG
-    operation = "Added SOS Assistant Users Application";
-    method = "POST";
-    recordObject.active = true;
+  //   // * Add the record. -- 02/06/2025 EBG
+  //   operation = "Added SOS Assistant Users Application";
+  //   method = "POST";
+  //   recordObject.active = true;
 
-    fetch(url, {
-      method: method,
-      headers: new Headers({
-        "Content-Type": "application/json", "Authorization": setFetchAuthorization(sessionToken, environmentMode, demonstrationMode)
-      }),
-      body: JSON.stringify({ recordObject })
-    })
-      .then(results => {
+  //   fetch(url, {
+  //     method: method,
+  //     headers: new Headers({
+  //       "Content-Type": "application/json", "Authorization": setFetchAuthorization(sessionToken, environmentMode, demonstrationMode)
+  //     }),
+  //     body: JSON.stringify({ recordObject })
+  //   })
+  //     .then(results => {
 
-        response = results;
+  //       response = results;
 
-        if (response.status === 200) {
+  //       if (response.status === 200) {
 
-          return response.json();
+  //         return response.json();
 
-        } else {
+  //       } else {
 
-          addErrorLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation: `${operation} SQL Server`, transactionData: { url, response: { ok: response.ok, redirected: response.redirected, status: response.status, statusText: response.statusText, type: response.type, url: response.url }, data, primaryKeyID, /* previousRecord, */ recordObject, applicationVersion, loggedInUser, computerLog }, errorData: { message: `${response.status} ${response.statusText} ${response.url}` }, dateEntered: getDateTime() });
+  //         addErrorLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation: `${operation} SQL Server`, transactionData: { url, response: { ok: response.ok, redirected: response.redirected, status: response.status, statusText: response.statusText, type: response.type, url: response.url }, data, primaryKeyID, /* previousRecord, */ recordObject, applicationVersion, loggedInUser, computerLog }, errorData: { message: `${response.status} ${response.statusText} ${response.url}` }, dateEntered: getDateTime() });
 
-          if (response.status === 401) {
+  //         if (response.status === 401) {
 
-            dispatch(setUserTokenExpired(true));
+  //           dispatch(setUserTokenExpired(true));
 
-          };
+  //         };
 
-          return Promise.reject(Error(response.status + " Fetch failed."));
+  //         return Promise.reject(Error(response.status + " Fetch failed."));
 
-        };
+  //       };
 
-      })
-      .then(results => {
+  //     })
+  //     .then(results => {
 
-        data = results;
+  //       data = results;
 
-        if (!isEmpty(data)) {
+  //       if (!isEmpty(data)) {
 
-          if (data.transactionSuccess && !isEmpty(data.records)) {
+  //         if (data.transactionSuccess && !isEmpty(data.records)) {
 
-            dispatch(setDatabaseAvailable(true));
+  //           dispatch(setDatabaseAvailable(true));
 
-            addLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, href: window.location.href, applicationVersion, browserData: JSON.stringify(getBrowserData()), transactionData: { primaryKeyID, /* dataRecord, */ loggedInUser, computerLog }, dateEntered: getDateTime() });
+  //           addLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, href: window.location.href, applicationVersion, browserData: JSON.stringify(getBrowserData()), transactionData: { primaryKeyID, /* dataRecord, */ loggedInUser, computerLog }, dateEntered: getDateTime() });
 
-            dispatch(addSuccessMessage(`${operation}: ${data.message}`));
+  //           dispatch(addSuccessMessage(`${operation}: ${data.message}`));
 
-            // } else {
+  //           // } else {
 
-            //   dispatch(addErrorMessage(`${operation}: ${data.message}`));
+  //           //   dispatch(addErrorMessage(`${operation}: ${data.message}`));
 
-            //   addErrorLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation: `${operation} SQL Server`, transactionData: { url, response: { ok: response.ok, redirected: response.redirected, status: response.status, statusText: response.statusText, type: response.type, url: response.url }, data, primaryKeyID, /* previousRecord, */ recordObject, applicationVersion, loggedInUser, computerLog }, errorData: { message: data.message }, dateEntered: getDateTime() });
+  //           //   addErrorLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation: `${operation} SQL Server`, transactionData: { url, response: { ok: response.ok, redirected: response.redirected, status: response.status, statusText: response.statusText, type: response.type, url: response.url }, data, primaryKeyID, /* previousRecord, */ recordObject, applicationVersion, loggedInUser, computerLog }, errorData: { message: data.message }, dateEntered: getDateTime() });
 
-          };
+  //         };
 
-        } else {
+  //       } else {
 
-          dispatch(addErrorMessage(`${operation}: No Results Returned.`));
+  //         dispatch(addErrorMessage(`${operation}: No Results Returned.`));
 
-          addErrorLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation: `${operation} SQL Server`, transactionData: { url, response: { ok: response.ok, redirected: response.redirected, status: response.status, statusText: response.statusText, type: response.type, url: response.url }, data, primaryKeyID, /* previousRecord, */ recordObject, applicationVersion, loggedInUser, computerLog }, errorData: { message: "No Results Returned." }, dateEntered: getDateTime() });
+  //         addErrorLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation: `${operation} SQL Server`, transactionData: { url, response: { ok: response.ok, redirected: response.redirected, status: response.status, statusText: response.statusText, type: response.type, url: response.url }, data, primaryKeyID, /* previousRecord, */ recordObject, applicationVersion, loggedInUser, computerLog }, errorData: { message: "No Results Returned." }, dateEntered: getDateTime() });
 
-        };
+  //       };
 
-      })
-      .catch((error) => {
+  //     })
+  //     .catch((error) => {
 
-        dispatch(addErrorMessage(`${operation}: ${convertSpecialCharacters(error.name)}: ${convertSpecialCharacters(error.message)}`));
+  //       dispatch(addErrorMessage(`${operation}: ${convertSpecialCharacters(error.name)}: ${convertSpecialCharacters(error.message)}`));
 
-        addErrorLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, transactionData: { primaryKeyID, /* previousRecord, */ recordObject, applicationVersion, loggedInUser, computerLog }, errorData: { name: error.name, message: error.message, inner: error.inner, stack: error.stack }, dateEntered: getDateTime() });
+  //       addErrorLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, transactionData: { primaryKeyID, /* previousRecord, */ recordObject, applicationVersion, loggedInUser, computerLog }, errorData: { name: error.name, message: error.message, inner: error.inner, stack: error.stack }, dateEntered: getDateTime() });
 
-        dispatch(setDatabaseAvailable(false));
+  //       dispatch(setDatabaseAvailable(false));
 
-      });
+  //     });
 
-  };
+  // };
 
 
   const clearSearch = () => {
 
     setTxtSearch("");
-    setDdUserRoleFilter("");
     setDdActiveFilter("true");
     setSortProperty("");
     setSortDirection("");
@@ -1128,8 +1081,6 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
 
               <FormInput formInputID="txtSearch" inputType="text" labelText="User" isRequired={false} placeholderText="Search Username" inputValue={txtSearch} updateValue={setTxtSearch} />
 
-              <FormDropdown formInputID="ddUserRoleFilter" labelText="User Roles" placeholderText="All" isRequired={false} optionData={userRoles} optionID="userRoleID" optionText={[{ type: "property", text: "userRole" }]} inputValue={ddUserRoleFilter} updateValue={setDdUserRoleFilter} />
-
               <FormDropdown formInputID="ddActiveFilter" labelText="Active Users" placeholderText="All" isRequired={false} optionData={[{ activeID: "true", activeName: "Active" }, { activeID: "false", activeName: "Inactive" }]} optionID="activeID" optionText={[{ type: "property", text: "activeName" }]} inputValue={ddActiveFilter} updateValue={setDdActiveFilter} />
 
               <button type="button" className="btn btn-dark-gray clear-search-button" onClick={() => { clearSearch(); }}>Clear Search</button>
@@ -1155,9 +1106,6 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
                     <SortableColumnHeader columnText="Username" columnPropertyName="username" sortDirection={sortDirection} sortProperty={sortProperty} setSortDirection={setSortDirection} setSortProperty={setSortProperty} />
                   </th>
                   <th>
-                    <SortableColumnHeader columnText="Role" columnPropertyName="userRole" sortDirection={sortDirection} sortProperty={sortProperty} setSortDirection={setSortDirection} setSortProperty={setSortProperty} />
-                  </th>
-                  <th>
                     <SortableColumnHeader columnText="Last Login" columnPropertyName="lastLogin" sortDirection={sortDirection} sortProperty={sortProperty} setSortDirection={setSortDirection} setSortProperty={setSortProperty} />
                   </th>
                   <th>
@@ -1176,7 +1124,6 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
                           <td>{user.lastName}</td>
                           <td>{user.email}</td>
                           <td>{user.username}</td>
-                          <td>{user.userRole}</td>
                           <td>{user.lastLogin === "1970-01-01T00:00:00.000Z" ? "-" : displayDateAndTime(user.lastLogin)}</td>
                           <td className="text-center">
                             {user.active /*|| user.active === 1*/ ? "Yes" : "-"}
@@ -1226,10 +1173,6 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
 
             <FormDropdown formInputID="ddPartnerSiteID" labelText="Partner and Partner Site" placeholderText="Select Partner and Partner Site" isRequired={true} optionData={currentPartnerSites} optionID="partnerSiteID" optionText={[{ type: "property", text: "partnerName" }, { type: "string", text: " (" }, { type: "property", text: "partnerSiteName" }, { type: "string", text: ")" }]} inlineError={inlineErrors.ddPartnerSiteID} inputValue={ddPartnerSiteID} updateValue={setDdPartnerSiteID} />
 
-            <FormDropdown formInputID="ddUserRole" labelText="Role" isRequired={true} optionData={userRoles} optionID="userRoleID" optionText={[{ type: "property", text: "userRole" }]} inlineError={inlineErrors.ddUserRole} inputValue={ddUserRole} updateValue={setDdUserRole} />
-
-            <CheckboxGroup formInputID="cbxApplicationID" legendText="Application Access" isRequired={true} formColumns={1} optionData={userApplications} optionID="applicationID" optionText={[{ type: "property", text: "applicationName" }]} inlineError={inlineErrors.cbxApplicationID} inputValue={cbxApplicationID} updateValue={setCbxApplicationID} />
-
             <FormInput formInputID="txtRequestedBy" inputType="text" labelText="Requested By" inputValue={txtRequestedBy} updateValue={setTxtRequestedBy} />
 
             <div className="form-group">
@@ -1245,9 +1188,9 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
 
               <button type="button" className="btn btn-primary" onClick={() => { saveRecord(); }}>Save</button>
 
-              <button type="button" className="btn btn-dark-gray" onClick={() => { loadRecord(currentUser); dispatch(clearMessages()); setInlineErrors({ txtUsername: "", txtFirstName: "", txtLastName: "", txtEmail: "", ddUserRole: "", ddPartnerSiteID: "", cbxApplicationID: "" }); }}>Reset</button>
+              <button type="button" className="btn btn-dark-gray" onClick={() => { loadRecord(currentUser); dispatch(clearMessages()); setInlineErrors({ txtUsername: "", txtFirstName: "", txtLastName: "", txtEmail: "", ddPartnerSiteID: "" }); }}>Reset</button>
 
-              <button type="button" className="btn btn-outline" onClick={() => { setCurrentUser(null); dispatch(setIsFormOpen(false)); dispatch(clearMessages()); setInlineErrors({ txtUsername: "", txtFirstName: "", txtLastName: "", txtEmail: "", ddUserRole: "", ddPartnerSiteID: "", cbxApplicationID: "" }); }}>Cancel</button>
+              <button type="button" className="btn btn-outline" onClick={() => { setCurrentUser(null); dispatch(setIsFormOpen(false)); dispatch(clearMessages()); setInlineErrors({ txtUsername: "", txtFirstName: "", txtLastName: "", txtEmail: "", ddPartnerSiteID: "" }); }}>Cancel</button>
 
               {!isEmpty(userID) ?
 
