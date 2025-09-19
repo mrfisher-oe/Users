@@ -1,1 +1,1 @@
-declare module 'shared-components';
+declare module "shared-components";

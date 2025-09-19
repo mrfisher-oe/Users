@@ -182,7 +182,7 @@ CREATE TABLE [users](
 	[partnerID] [INT] NULL,
 	[partnerSiteID] [INT] NULL,
 	
-	[userRoleID] [INT] NULL,
+	-- [userRoleID] [INT] NULL,
 	[shared] [BIT] NULL,
 	[requestedBy] [VARCHAR](250) NULL,
 	[requestDate] [DATETIME] NULL,
@@ -223,6 +223,7 @@ GO
 CREATE TABLE [usersApplications](
 	[userID] [INT] NOT NULL,
 	[applicationID] [INT] NOT NULL,
+	[userRoleID] [INT] NULL,
 	[createDate] [DATETIME] NOT NULL
 ) ON [PRIMARY]
 GO

@@ -1,1 +1,1 @@
-declare module 'shared-functions';
+declare module "shared-functions";
