@@ -22,7 +22,7 @@ const Profile = () => {
   // const baseURLApplied = useAppSelector((state: RootState) => state.applicationSettings.baseURLApplied);
   const computerLog = useAppSelector((state: RootState) => state.applicationSettings.computerLog);
   const userIdentifier = useAppSelector((state: RootState) => state.applicationSettings.userIdentifier);
-  const demonstrationMode = useSelector(state => state.applicationSettings.demonstrationMode);
+  const demonstrationMode = useAppSelector((state: RootState) => state.applicationSettings.demonstrationMode);
   const environmentMode = useAppSelector((state: RootState) => state.applicationSettings.environmentMode);
   const databaseAvailable = useAppSelector((state: RootState) => state.applicationSettings.databaseAvailable);
   // const userTokenExpired = useAppSelector((state: RootState) => state.applicationSettings.userTokenExpired);
