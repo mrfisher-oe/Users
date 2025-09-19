@@ -38,16 +38,17 @@ const useFetchData = () => {
 
   useEffect(() => {
 
-    if (!isEmpty(loggedInUser) && loggedInUser.isAdministrator) {
+    // TODO: These will need to be rewritten to match the new data structures. -- 09/19/2025 MF
+    // if (!isEmpty(loggedInUser) && loggedInUser.isAdministrator) {
 
-      // * Causes the application to possibly re-render many times with this code: dispatch(clearMessages());. -- 02/07/2025 MF
-      // dispatch(setFetchDataUserApplications(true));
+    // * Causes the application to possibly re-render many times with this code: dispatch(clearMessages());. -- 02/07/2025 MF
+    // dispatch(setFetchDataUserApplications(true));
 
-      loadUserApplications();
+    loadUserApplications();
 
-      loadRequestTypes();
+    loadRequestTypes();
 
-    };
+    // };
 
   }, [loggedInUser]);
 

@@ -21,7 +21,7 @@ export interface User {
   notes?: string;
   lastLogin?: string;
   updatedBy?: number;
-  active: boolean;
+  active?: boolean;
   createDate?: string;
   updateDate?: string;
   inactiveDate?: string;
