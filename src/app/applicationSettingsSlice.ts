@@ -36,6 +36,8 @@ type ApplicationSettingsTypes = {
   checkDatabaseAvailable: any;
 
   applicationSettings: Record<string, unknown>;
+
+  fetchDataSOSAssistantUserApplications: boolean;
 };
 
 const initialState: ApplicationSettingsTypes = {
@@ -61,7 +63,10 @@ const initialState: ApplicationSettingsTypes = {
 
   checkDatabaseAvailable: null,
 
-  applicationSettings: {}
+  applicationSettings: {},
+
+
+  fetchDataSOSAssistantUserApplications: false
 
 };
 
@@ -248,10 +253,15 @@ const applicationSettingsSlice = createSlice({
 
       state.applicationSettings = action.payload;
 
+    },
+    setFetchDataSOSAssistantUserApplications(state, action: PayloadAction<ApplicationSettingsTypes["fetchDataSOSAssistantUserApplications"]>) {
+
+      state.fetchDataSOSAssistantUserApplications = action.payload;
+
     }
   }
 });
 
-export const { setApplicationVersion, setCopyrightYear, setBaseURL, setBaseURLApplied, /* setBaseURLPartners, setParametersURL, */ setDemonstrationMode, setEnvironmentMode, setComputerLog, setUserIdentifier, setDatabaseAvailable, setUserTokenExpired, addBrowserData, setLocationLogged, setCheckDatabaseAvailable, setApplicationSettings } = applicationSettingsSlice.actions;
+export const { setApplicationVersion, setCopyrightYear, setBaseURL, setBaseURLApplied, /* setBaseURLPartners, setParametersURL, */ setDemonstrationMode, setEnvironmentMode, setComputerLog, setUserIdentifier, setDatabaseAvailable, setUserTokenExpired, setLocationLogged, setCheckDatabaseAvailable, setApplicationSettings, setFetchDataSOSAssistantUserApplications } = applicationSettingsSlice.actions;
 
 export default applicationSettingsSlice.reducer;
