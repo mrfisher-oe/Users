@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { isEmpty, isNonEmptyArray } from "shared-functions";
-import type { User, UserRequest } from "../types/Users";
+import type { User, UserRequest } from "../types/User";
 
 type ActivityTypes = {
   sessionToken: string | null; // ?
@@ -16,7 +16,7 @@ type ActivityTypes = {
   // currentUserRequest: UserRequest | null;
   currentUserRequest: any; // TODO type -- 09/18/2025 JH
 
-  sosAssistantUserApplications: Record<string, unknown>[];
+  userApplications: Record<string, unknown>[];
 
   partners: Record<string, unknown>[];
   currentPartners: Record<string, unknown>[];
@@ -28,9 +28,9 @@ type ActivityTypes = {
   demonstrationRequestTypeID: string | number;
   conferenceRequestTypeID: string | number;
   marketingRequestTypeID: string | number;
-  sosAssistantUserRequestTypeID: string | number;
+  userRequestTypeID: string | number;
 
-  sosAssistantUserRequests: any; // TODO type -- 09/18/2025 JH
+  userRequests: any; // TODO type -- 09/18/2025 JH
 
   informationMessage: string;
   successMessage: string;
@@ -55,7 +55,7 @@ const initialState: ActivityTypes = {
   currentUserRequestID: null,
   currentUserRequest: null,
 
-  sosAssistantUserApplications: [],
+  userApplications: [],
 
   partners: [],
   currentPartners: [],
@@ -67,9 +67,9 @@ const initialState: ActivityTypes = {
   demonstrationRequestTypeID: null,
   conferenceRequestTypeID: null,
   marketingRequestTypeID: null,
-  sosAssistantUserRequestTypeID: null,
+  userRequestTypeID: null,
 
-  sosAssistantUserRequests: null,
+  userRequests: null,
 
   informationMessage: "",
   successMessage: "",
@@ -113,7 +113,7 @@ const activitySlice = createSlice({
     },
     setUserRequests(state, action) {
 
-      state.sosAssistantUserRequests = action.payload;
+      state.userRequests = action.payload;
 
     },
     setCurrentUserRequest(state, action: PayloadAction<ActivityTypes["currentUserRequest"]>) {
@@ -122,7 +122,7 @@ const activitySlice = createSlice({
 
       if (!isEmpty(action.payload)) {
 
-        state.currentUserRequestID = action.payload.sosAssistantUserRequestID;
+        state.currentUserRequestID = action.payload.userRequestID;
 
       } else {
 
@@ -131,9 +131,9 @@ const activitySlice = createSlice({
       };
 
     },
-    setSOSAssistantUserApplications(state, action: PayloadAction<ActivityTypes["sosAssistantUserApplications"]>) {
+    setUserApplications(state, action: PayloadAction<ActivityTypes["userApplications"]>) {
 
-      state.sosAssistantUserApplications = action.payload;
+      state.userApplications = action.payload;
 
     },
     setPartnerSites(state, action: PayloadAction<ActivityTypes["partnerSites"]>) {
@@ -194,7 +194,7 @@ const activitySlice = createSlice({
               state.marketingRequestTypeID = action.payload[i].requestTypeID;
               break;
             case "SOS Assistant User":
-              state.sosAssistantUserRequestTypeID = action.payload[i].requestTypeID;
+              state.userRequestTypeID = action.payload[i].requestTypeID;
               break;
             default:
               console.log("A request type not accounted for.");
@@ -328,6 +328,6 @@ const activitySlice = createSlice({
   }
 });
 
-export const { setSessionToken, setLoggedInUser, setComponentToLoad, setIsFormOpen, setAssociatedData, setUserRequests, setCurrentUserRequest, setSOSAssistantUserApplications, setPartnerSites, setRequestTypes, addInformationMessage, addSuccessMessage, addWarningMessage, addErrorMessage, clearMessages } = activitySlice.actions;
+export const { setSessionToken, setLoggedInUser, setComponentToLoad, setIsFormOpen, setAssociatedData, setUserRequests, setCurrentUserRequest, setUserApplications, setPartnerSites, setRequestTypes, addInformationMessage, addSuccessMessage, addWarningMessage, addErrorMessage, clearMessages } = activitySlice.actions;
 
 export default activitySlice.reducer;

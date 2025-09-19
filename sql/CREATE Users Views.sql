@@ -7,6 +7,9 @@ GO
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vw_userApplications]') AND type in (N'V'))
 DROP VIEW [vw_userApplications]
 GO
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vw_userApplicationPermissions]') AND type in (N'V'))
+DROP VIEW [vw_userApplicationPermissions]
+GO
 
 SET ANSI_NULLS ON
 GO
@@ -30,9 +33,20 @@ SET QUOTED_IDENTIFIER ON
 GO
 CREATE VIEW [vw_userApplications]
 AS
-SELECT userID, usersApplications.applicationID, users.userRoleID, userRole, usersApplications.createDate AS usersApplicationsCreateDate, applicationName
+SELECT applicationID, applicationName
+FROM userApplications
+WHERE userApplications.active = 1
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [vw_userApplicationPermissions]
+AS
+SELECT userID, usersApplications.applicationID, usersApplications.userRoleID, userRole, usersApplications.createDate AS usersApplicationsCreateDate, applicationName
 FROM usersApplications
-INNER JOIN userApplications ON usersApplications.applicationID = userApplications.applicationID
+INNER JOIN vw_userApplications ON usersApplications.applicationID = vw_userApplications.applicationID
 INNER JOIN userRoles ON usersApplications.userRoleID = userRoles.userRoleID
 WHERE userApplications.active = 1
 GO

@@ -6,7 +6,7 @@ import { sessionTokenName, setFetchAuthorization } from "../utilities/applicatio
 import { setDatabaseAvailable, setUserTokenExpired } from "../app/applicationSettingsSlice";
 import { setComponentToLoad, setIsFormOpen, addSuccessMessage, addErrorMessage, clearMessages } from "../app/activitySlice";
 import type { RootState } from '../app/store';
-import type { User, UserRequest } from "../types/Users";
+import type { User, UserRequest } from "../types/User";
 
 type InlineErrors = {
   txtUsername: string;
@@ -39,8 +39,8 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
   const loggedInUser = useAppSelector((state: RootState) => state.activity.loggedInUser);
   const sessionToken = useAppSelector((state: RootState) => state.activity.sessionToken);
 
-  // const sosAssistantUserRequests = useAppSelector((state: RootState) => state.activity.sosAssistantUserRequests);
-  const sosAssistantUserApplications = useAppSelector((state: RootState) => state.activity.sosAssistantUserApplications);
+  // const userRequests = useAppSelector((state: RootState) => state.activity.userRequests);
+  const userApplications = useAppSelector((state: RootState) => state.activity.userApplications);
   // const requestTypes = useAppSelector((state: RootState) => state.activity.requestTypes);
   // const partners = useAppSelector((state: RootState) => state.activity.partners);
   // const currentPartners = useAppSelector((state: RootState) => state.activity.currentPartners);
@@ -466,7 +466,7 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
       // * Causes the form to re-render after submission and the messages disappear before they can be viewed. -- 02/07/2025 MF
       // dispatch(clearMessages());
 
-      let url: string = `${baseURL}sosAssistantUsers/applications/${currentUserID}/`; // TODO update url -- 09/18/2025 JH
+      let url: string = `${baseURL}users/applications/${currentUserID}/`; // TODO update url -- 09/18/2025 JH
       let response: any = "";
       let data: any = "";
       let operation: string = "Get User Applications";
@@ -1005,7 +1005,7 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
     // * Causes the edit form to re-render after submission and the messages disappear before they can be viewed. -- 05/07/2024 MF
     // dispatch(clearMessages());
 
-    let url: string = `${baseURL}sosAssistantUsers/sosAssistantUsersApplications/${primaryKeyID}/`;
+    let url: string = `${baseURL}users/usersApplications/${primaryKeyID}/`;
     let response: any = "";
     let data: any = "";
     let operation: string = "";
@@ -1228,7 +1228,7 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
 
             <FormDropdown formInputID="ddUserRole" labelText="Role" isRequired={true} optionData={userRoles} optionID="userRoleID" optionText={[{ type: "property", text: "userRole" }]} inlineError={inlineErrors.ddUserRole} inputValue={ddUserRole} updateValue={setDdUserRole} />
 
-            <CheckboxGroup formInputID="cbxApplicationID" legendText="Application Access" isRequired={true} formColumns={1} optionData={sosAssistantUserApplications} optionID="applicationID" optionText={[{ type: "property", text: "applicationName" }]} inlineError={inlineErrors.cbxApplicationID} inputValue={cbxApplicationID} updateValue={setCbxApplicationID} />
+            <CheckboxGroup formInputID="cbxApplicationID" legendText="Application Access" isRequired={true} formColumns={1} optionData={userApplications} optionID="applicationID" optionText={[{ type: "property", text: "applicationName" }]} inlineError={inlineErrors.cbxApplicationID} inputValue={cbxApplicationID} updateValue={setCbxApplicationID} />
 
             <FormInput formInputID="txtRequestedBy" inputType="text" labelText="Requested By" inputValue={txtRequestedBy} updateValue={setTxtRequestedBy} />
 

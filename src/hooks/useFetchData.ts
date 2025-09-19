@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "../app/hooks";
 import { isEmpty, getDateTime, convertSpecialCharacters, addLog, addErrorLog, allowLogging } from "shared-functions";
 import { setFetchAuthorization } from "../utilities/applicationFunctions";
-import { setDatabaseAvailable, setUserTokenExpired, setFetchDataSOSAssistantUserApplications } from "../app/applicationSettingsSlice";
-import { setAssociatedData, setSOSAssistantUserApplications, setPartnerSites, setRequestTypes, addErrorMessage, clearMessages } from "../app/activitySlice";
+import { setDatabaseAvailable, setUserTokenExpired, setFetchDataUserApplications } from "../app/applicationSettingsSlice";
+import { setAssociatedData, setUserApplications, setPartnerSites, setRequestTypes, addErrorMessage, clearMessages } from "../app/activitySlice";
 import type { RootState } from '../app/store';
 
 const useFetchData = () => {
@@ -23,7 +23,7 @@ const useFetchData = () => {
   const loggedInUser = useAppSelector((state: RootState) => state.activity.loggedInUser);
   const sessionToken = useAppSelector((state: RootState) => state.activity.sessionToken);
 
-  const fetchDataSOSAssistantUserApplications = useAppSelector((state: RootState) => state.applicationSettings.fetchDataSOSAssistantUserApplications);
+  const fetchDataUserApplications = useAppSelector((state: RootState) => state.applicationSettings.fetchDataUserApplications);
 
 
   useEffect(() => {
@@ -41,9 +41,9 @@ const useFetchData = () => {
     if (!isEmpty(loggedInUser) && loggedInUser.isAdministrator) {
 
       // * Causes the application to possibly re-render many times with this code: dispatch(clearMessages());. -- 02/07/2025 MF
-      // dispatch(setFetchDataSOSAssistantUserApplications(true));
+      // dispatch(setFetchDataUserApplications(true));
 
-      loadSOSAssistantUserApplications();
+      loadUserApplications();
 
       loadRequestTypes();
 
@@ -54,29 +54,29 @@ const useFetchData = () => {
 
   useEffect(() => {
 
-    if (fetchDataSOSAssistantUserApplications === true) {
+    if (fetchDataUserApplications === true) {
 
       dispatch(clearMessages());
 
-      loadSOSAssistantUserApplications();
+      loadUserApplications();
 
-      dispatch(setFetchDataSOSAssistantUserApplications(false));
+      dispatch(setFetchDataUserApplications(false));
 
     };
 
-  }, [fetchDataSOSAssistantUserApplications]);
+  }, [fetchDataUserApplications]);
 
 
-  const loadSOSAssistantUserApplications = () => {
+  const loadUserApplications = () => {
 
     if (!isEmpty(sessionToken) && !isEmpty(baseURL)) {
 
       // * Causes the form to re-render after submission and the messages disappear before they can be viewed. -- 02/07/2025 MF
       // dispatch(clearMessages());
 
-      dispatch(setSOSAssistantUserApplications([]));
+      dispatch(setUserApplications([]));
 
-      let url: string = `${baseURL}sosAssistantUserApplications/`;
+      let url: string = `${baseURL}userApplications/`;
       let response: any = "";
       let data: any = "";
       let operation: string = "Get SOS Assistant User Applications";
@@ -116,7 +116,7 @@ const useFetchData = () => {
 
             if (data.transactionSuccess && !isEmpty(data.records)) {
 
-              dispatch(setSOSAssistantUserApplications(data.records));
+              dispatch(setUserApplications(data.records));
 
               dispatch(setDatabaseAvailable(true));
 

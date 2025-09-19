@@ -24,8 +24,8 @@ const UserRequests = ({ processTransactionUserRequest }) => {
   const loggedInUser = useAppSelector((state: RootState) => state.activity.loggedInUser);
   const sessionToken = useAppSelector((state: RootState) => state.activity.sessionToken);
 
-  const sosAssistantUserRequests = useAppSelector((state: RootState) => state.activity.sosAssistantUserRequests);
-  // const sosAssistantUserApplications = useAppSelector((state: RootState) => state.activity.sosAssistantUserApplications);
+  const userRequests = useAppSelector((state: RootState) => state.activity.userRequests);
+  // const userApplications = useAppSelector((state: RootState) => state.activity.userApplications);
   // const requestTypes = useAppSelector((state: RootState) => state.activity.requestTypes);
   // const partners = useAppSelector((state: RootState) => state.activity.partners);
   const currentPartners = useAppSelector((state: RootState) => state.activity.currentPartners);
@@ -103,21 +103,21 @@ const UserRequests = ({ processTransactionUserRequest }) => {
 
     // };
 
-    if (isNonEmptyArray(sosAssistantUserRequests)) {
+    if (isNonEmptyArray(userRequests)) {
 
       setCurrentUserRequests([]);
 
-      let combinedResults = [...sosAssistantUserRequests];
+      let combinedResults = [...userRequests];
 
       if (!isEmpty(ddPartnerID)) {
 
-        combinedResults = combinedResults.filter((sosAssistantUserRequest) => parseInt(sosAssistantUserRequest.partnerID) === parseInt(ddPartnerID));
+        combinedResults = combinedResults.filter((userRequest) => parseInt(userRequest.partnerID) === parseInt(ddPartnerID));
 
       };
 
       if (!isEmpty(ddPartnerSiteID)) {
 
-        combinedResults = combinedResults.filter((sosAssistantUserRequest) => parseInt(sosAssistantUserRequest.partnerSiteID) === parseInt(ddPartnerSiteID));
+        combinedResults = combinedResults.filter((userRequest) => parseInt(userRequest.partnerSiteID) === parseInt(ddPartnerSiteID));
 
       };
 
@@ -125,11 +125,11 @@ const UserRequests = ({ processTransactionUserRequest }) => {
 
         if (ddRequestStatus === "Completed") {
 
-          combinedResults = combinedResults.filter((sosAssistantUserRequest) => sosAssistantUserRequest.requestStatus === "Completed");
+          combinedResults = combinedResults.filter((userRequest) => userRequest.requestStatus === "Completed");
 
         } else if (ddRequestStatus === "Submitted") {
 
-          combinedResults = combinedResults.filter((sosAssistantUserRequest) => sosAssistantUserRequest.requestStatus === "Submitted");
+          combinedResults = combinedResults.filter((userRequest) => userRequest.requestStatus === "Submitted");
 
         };
 
@@ -151,7 +151,7 @@ const UserRequests = ({ processTransactionUserRequest }) => {
 
     };
 
-  }, [sosAssistantUserRequests, ddPartnerID, ddPartnerSiteID, ddRequestStatus, sortProperty, sortDirection]);
+  }, [userRequests, ddPartnerID, ddPartnerSiteID, ddRequestStatus, sortProperty, sortDirection]);
 
 
   const loadUserRequests = () => {
@@ -163,7 +163,7 @@ const UserRequests = ({ processTransactionUserRequest }) => {
       dispatch(setUserRequests([]));
       setCurrentUserRequests([]);
 
-      let url: string = `${baseURL}sosAssistantUsers/sosAssistantUserRequests/`;
+      let url: string = `${baseURL}users/userRequests/`;
       let response: any = "";
       let data: any = "";
       let operation: string = "Get SOS Assistant User Requests";
@@ -209,7 +209,7 @@ const UserRequests = ({ processTransactionUserRequest }) => {
               //  * If there's currently a currentUserRequestID, then update currentRequest with the new record -- 05/06/2024 JH
               if (!isEmpty(currentUserRequest)) {
 
-                let newCurrentUserID = getFirstItem(data.records.filter(record => record.sosAssistantUserRequestID === currentUserRequest.sosAssistantUserRequestID));
+                let newCurrentUserID = getFirstItem(data.records.filter(record => record.userRequestID === currentUserRequest.userRequestID));
 
                 if (!isEmpty(newCurrentUserID)) {
 
@@ -264,7 +264,7 @@ const UserRequests = ({ processTransactionUserRequest }) => {
 
       <h2>User Requests</h2>
 
-      {isEmpty(currentUserRequest) && isNonEmptyArray(sosAssistantUserRequests) ?
+      {isEmpty(currentUserRequest) && isNonEmptyArray(userRequests) ?
 
         <>
 
@@ -372,7 +372,7 @@ const UserRequests = ({ processTransactionUserRequest }) => {
                     ) => {
 
                       return (
-                        <tr key={userRequest.sosAssistantUserRequestID} className="clickable-table-row" onClick={() => { window.scrollTo(0, 0); dispatch(setCurrentUserRequest(userRequest)); }}>
+                        <tr key={userRequest.userRequestID} className="clickable-table-row" onClick={() => { window.scrollTo(0, 0); dispatch(setCurrentUserRequest(userRequest)); }}>
                           <td>{userRequest.firstName}</td>
                           <td>{userRequest.lastName}</td>
                           <td>{userRequest.email}</td>

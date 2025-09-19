@@ -1,6 +1,9 @@
-type ApplicationID = {
-  userID: number;
+type ApplicationIDs = {
   applicationID: Record<number, unknown>;
+};
+
+type Applications = {
+  applicationName: Record<string, unknown>;
 };
 
 export interface User {
@@ -10,21 +13,23 @@ export interface User {
   lastName: string;
   email: string;
   password?: string;
-  userRoleID: string;
+  partnerID?: number;
+  partnerSiteID?: number;
+  shared?: boolean;
   requestedBy?: string;
   requestDate?: string;
   notes?: string;
-  active?: boolean;
-  userRole?: string;
   lastLogin?: string;
   updatedBy?: number;
-  isSystemAdministrator?: boolean;
-  isAdministrator?: boolean;
-  partnerSiteID?: number;
-  applicationID?: ApplicationID[];
+  active: boolean;
+  createDate?: string;
+  updateDate?: string;
+  inactiveDate?: string;
+  applicationIDs?: ApplicationIDs[];
+  applications?: Applications[];
 };
 
 export interface UserRequest extends User {
-  sosAssistantUserRequestID?: number;
+  userRequestID?: number;
   positionName?: string;
 }
