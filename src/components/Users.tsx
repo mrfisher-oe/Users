@@ -639,7 +639,7 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
         txtUsername: "Please enter the <strong>Username</strong>."
       };
 
-    } else if (isDuplicateUsername(txtUsername)) {
+    } else if (formatTrim(txtUsername) !== currentUser?.username && isDuplicateUsername(txtUsername)) {
 
       // * Make sure that the user's Username is unique. -- 06/24/2021 MF
       // errorMessages = `${errorMessages}, <strong>Username</strong>`;

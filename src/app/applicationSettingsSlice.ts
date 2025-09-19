@@ -9,6 +9,18 @@ type ApplicationSettingsTypes = {
   // databaseNameDevelopment: string;
   baseURL: string;
   baseURLApplied: boolean;
+  browserData: {
+    appCodeName: string;
+    appName: string;
+    appVersion: string;
+    cookieEnabled: boolean;
+    language: string;
+    onLine: boolean;
+    platform: string;
+    product: string;
+    userAgent: string;
+  } | null;
+  // browserData: Partial<Navigator>; // * This causes an error that I'm not sure how to fix -- 09/16/2025 JH
   computerLog: Record<string, unknown>;
   userIdentifier: string;
   databaseAvailable: boolean;
@@ -36,6 +48,7 @@ const initialState: ApplicationSettingsTypes = {
   // databaseNameDevelopment: "UsersDevelopment",
   baseURL: "",
   baseURLApplied: false,
+  browserData: null,
   computerLog: {},
   userIdentifier: "",
   databaseAvailable: true,
@@ -218,6 +231,12 @@ const applicationSettingsSlice = createSlice({
     setUserTokenExpired(state, action: PayloadAction<ApplicationSettingsTypes["userTokenExpired"]>) {
 
       state.userTokenExpired = action.payload;
+
+    },
+    addBrowserData(state, action: PayloadAction<ApplicationSettingsTypes["browserData"]>) {
+
+      // ? Remove from redux and just use getBrowserData from shared-functions? -- 09/17/2025 JH
+      state.browserData = action.payload;
 
     },
     setLocationLogged(state, action: PayloadAction<ApplicationSettingsTypes["locationLogged"]>) {
