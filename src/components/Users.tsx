@@ -26,6 +26,8 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
 
   const applicationVersion = useAppSelector((state: RootState) => state.applicationSettings.applicationVersion);
   const baseURL = useAppSelector((state: RootState) => state.applicationSettings.baseURL);
+  const baseURLPartners = useAppSelector((state: RootState) => state.applicationSettings.baseURLPartners);
+  const baseURLExtendedRealityScheduling = useAppSelector((state: RootState) => state.applicationSettings.baseURLExtendedRealityScheduling);
   // const baseURLApplied = useAppSelector((state: RootState) => state.applicationSettings.baseURLApplied);
   const computerLog = useAppSelector((state: RootState) => state.applicationSettings.computerLog);
   const userIdentifier = useAppSelector((state: RootState) => state.applicationSettings.userIdentifier);
@@ -38,7 +40,7 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
   const sessionToken = useAppSelector((state: RootState) => state.activity.sessionToken);
 
   // const userRequests = useAppSelector((state: RootState) => state.activity.userRequests);
-  const userApplications = useAppSelector((state: RootState) => state.activity.userApplications);
+  const applications = useAppSelector((state: RootState) => state.activity.applications);
   // const requestTypes = useAppSelector((state: RootState) => state.activity.requestTypes);
   // const partners = useAppSelector((state: RootState) => state.activity.partners);
   // const currentPartners = useAppSelector((state: RootState) => state.activity.currentPartners);
@@ -441,7 +443,7 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
       // * Causes the form to re-render after submission and the messages disappear before they can be viewed. -- 02/07/2025 MF
       // dispatch(clearMessages());
 
-      let url: string = `${baseURL}users/applications/${currentUserID}/`; // TODO update url -- 09/18/2025 JH
+      let url: string = `${baseURL}users/applications/${currentUserID}/`;
       let response: any = "";
       let data: any = "";
       let operation: string = "Get User Applications";
@@ -929,7 +931,7 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
 
       //   if (data.transactionSuccess && !isEmpty(data.records)) {
 
-      //     // *Add the SOS Assistant User Applications records with the userID. -- 07/15/2024 MF
+      //     // *Add the User Applications records with the userID. -- 07/15/2024 MF
       //     processUserApplications(primaryKeyID);
 
       //   };
@@ -954,12 +956,12 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
 
   // const processUserApplications = (primaryKeyID: string | number) => {
 
-  //   // * Update the SOS Assistant Users Applications in the database. -- 02/06/2025 EBG
+  //   // * Update the Users Applications in the database. -- 02/06/2025 EBG
 
   //   // * Causes the edit form to re-render after submission and the messages disappear before they can be viewed. -- 05/07/2024 MF
   //   // dispatch(clearMessages());
 
-  //   let url: string = `${baseURL}users/usersApplications/${primaryKeyID}/`;
+  //   let url: string = `${baseURL}users/applications/${primaryKeyID}/`;
   //   let response: any = "";
   //   let data: any = "";
   //   let operation: string = "";
@@ -972,7 +974,7 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
   //   let recordObject: any = cbxApplicationID.map((application) => ({ userID: primaryKeyID, applicationID: application }));
 
   //   // * Add the record. -- 02/06/2025 EBG
-  //   operation = "Added SOS Assistant Users Application";
+  //   operation = "Added Users Application";
   //   method = "POST";
   //   recordObject.active = true;
 

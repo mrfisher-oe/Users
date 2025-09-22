@@ -37,6 +37,15 @@ GO
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[userApplications]') AND type in (N'U'))
 ALTER TABLE [userApplications] DROP CONSTRAINT [DF_userApplications_createDate]
 GO
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[userRequests]') AND type in (N'U'))
+ALTER TABLE [userRequests] DROP CONSTRAINT [DF_userRequests_createDate]
+GO
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[userRequests]') AND type in (N'U'))
+ALTER TABLE [userRequests] DROP CONSTRAINT IF EXISTS [DF_userRequests_active]
+GO
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[userRequests]') AND type in (N'U'))
+ALTER TABLE [userRequests] DROP CONSTRAINT IF EXISTS [DF_userRequests_completed]
+GO
 
 DROP TABLE IF EXISTS [applicationSettings]
 GO
@@ -52,11 +61,11 @@ DROP TABLE IF EXISTS [users]
 GO
 DROP TABLE IF EXISTS [userRoles]
 GO
-DROP TABLE IF EXISTS [users]
-GO
 DROP TABLE IF EXISTS [applications]
 GO
 DROP TABLE IF EXISTS [userApplications]
+GO
+DROP TABLE IF EXISTS [userRequests]
 GO
 
 SET ANSI_NULLS ON
@@ -189,7 +198,8 @@ CREATE TABLE [users](
 	[active] [BIT] NOT NULL,
 	[createDate] [DATETIME] NOT NULL,
 	[updateDate] [DATETIME] NULL,
-	[inactiveDate] [DATETIME] NULL
+	[inactiveDate] [DATETIME] NULL,
+	[dataSource] [VARCHAR](255) NULL,
  CONSTRAINT [PK_users] PRIMARY KEY CLUSTERED 
 (
 	[userID] ASC
@@ -225,6 +235,31 @@ CREATE TABLE [userApplications](
 ) ON [PRIMARY]
 GO
 
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [userRequests](
+	[userRequestID] [INT] IDENTITY(1,1) NOT NULL,
+	[requestTypeID] [INT] NOT NULL,
+	[firstName] [VARCHAR](255) NULL,
+	[lastName] [VARCHAR](255) NULL,
+	[email] [VARCHAR](255) NULL,
+	[partnerSiteID] [INT] NULL,
+	[positionID] [INT] NULL,
+	[programID] [INT] NULL,
+	[simulationDate] [DATETIME] NULL,
+	[details] [VARCHAR](8000) NULL,
+	[completed] [BIT] NOT NULL,
+	[active] [BIT] NOT NULL,
+	[createDate] [DATETIME] NOT NULL,
+ CONSTRAINT [PK_userRequests] PRIMARY KEY CLUSTERED 
+(
+	[userRequestID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
 ALTER TABLE [applicationSettings] ADD CONSTRAINT [DF_applicationSettings_active] DEFAULT((1)) FOR [active]
 GO
 ALTER TABLE [databaseErrorLogs] ADD CONSTRAINT [DF_databaseErrorLogs_createDate] DEFAULT (GETDATE()) FOR [createDate]
@@ -248,6 +283,12 @@ GO
 ALTER TABLE [applications] ADD CONSTRAINT [DF_applications_createDate] DEFAULT (GETDATE()) FOR [createDate]
 GO
 ALTER TABLE [userApplications] ADD CONSTRAINT [DF_userApplications_createDate] DEFAULT (GETDATE()) FOR [createDate]
+GO
+ALTER TABLE [userRequests] ADD CONSTRAINT [DF_userRequests_completed] DEFAULT ((0)) FOR [completed]
+GO
+ALTER TABLE [userRequests] ADD CONSTRAINT [DF_userRequests_active] DEFAULT ((1)) FOR [active]
+GO
+ALTER TABLE [userRequests] ADD CONSTRAINT [DF_userRequests_createDate] DEFAULT (GETDATE()) FOR [createDate]
 GO
 
 SET IDENTITY_INSERT [applicationSettings] ON 

@@ -45,9 +45,11 @@ INSERT [userRoles] ([userRoleID], [userRole], [active], [createDate]) VALUES (7,
 GO
 INSERT [userRoles] ([userRoleID], [userRole], [active], [createDate]) VALUES (8, N'Simulation Operations Specialist (SOS)', 1, CAST(N'2024-05-16T17:38:11.523' AS DateTime))
 GO
-INSERT [userRoles] ([userRoleID], [userRole], [active], [createDate]) VALUES (9, N'Course Lead', 1, CAST(N'2024-05-16T17:38:31.930' AS DateTime))
+INSERT [userRoles] ([userRoleID], [userRole], [active], [createDate]) VALUES (9, N'Simulation Operations Specialist (SOS) Traveling', 1, CAST(N'2024-10-22 19:23:52.627' AS DateTime))
 GO
-INSERT [userRoles] ([userRoleID], [userRole], [active], [createDate]) VALUES (10, N'Assisting Clinical Faculty', 1, CAST(N'2024-05-16T17:38:38.370' AS DateTime))
+INSERT [userRoles] ([userRoleID], [userRole], [active], [createDate]) VALUES (10, N'Course Lead', 1, CAST(N'2024-05-16T17:38:31.930' AS DateTime))
+GO
+INSERT [userRoles] ([userRoleID], [userRole], [active], [createDate]) VALUES (11, N'Assisting Clinical Faculty', 1, CAST(N'2024-05-16T17:38:38.370' AS DateTime))
 GO
 SET IDENTITY_INSERT [userRoles] OFF
 GO

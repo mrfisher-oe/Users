@@ -13,6 +13,8 @@ const UserRequests = ({ processTransactionUserRequest }) => {
 
   const applicationVersion = useAppSelector((state: RootState) => state.applicationSettings.applicationVersion);
   const baseURL = useAppSelector((state: RootState) => state.applicationSettings.baseURL);
+  const baseURLPartners = useAppSelector((state: RootState) => state.applicationSettings.baseURLPartners);
+  const baseURLExtendedRealityScheduling = useAppSelector((state: RootState) => state.applicationSettings.baseURLExtendedRealityScheduling);
   // const baseURLApplied = useAppSelector((state: RootState) => state.applicationSettings.baseURLApplied);
   const computerLog = useAppSelector((state: RootState) => state.applicationSettings.computerLog);
   const userIdentifier = useAppSelector((state: RootState) => state.applicationSettings.userIdentifier);
@@ -25,7 +27,7 @@ const UserRequests = ({ processTransactionUserRequest }) => {
   const sessionToken = useAppSelector((state: RootState) => state.activity.sessionToken);
 
   const userRequests = useAppSelector((state: RootState) => state.activity.userRequests);
-  // const userApplications = useAppSelector((state: RootState) => state.activity.userApplications);
+  // const applications = useAppSelector((state: RootState) => state.activity.applications);
   // const requestTypes = useAppSelector((state: RootState) => state.activity.requestTypes);
   // const partners = useAppSelector((state: RootState) => state.activity.partners);
   const currentPartners = useAppSelector((state: RootState) => state.activity.currentPartners);
@@ -164,10 +166,10 @@ const UserRequests = ({ processTransactionUserRequest }) => {
       dispatch(setUserRequests([]));
       setCurrentUserRequests([]);
 
-      let url: string = `${baseURL}users/userRequests/`;
+      let url: string = `${baseURL}userRequests/`;
       let response: any = "";
       let data: any = "";
-      let operation: string = "Get SOS Assistant User Requests";
+      let operation: string = "Get User Requests";
 
       fetch(url, {
         method: "GET",

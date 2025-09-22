@@ -3,7 +3,7 @@ import { useAppSelector, useAppDispatch } from "../app/hooks";
 import { DialogBoxConfirmation, FormInput, useDialogBoxConfirmation } from "shared-components";
 import { isEmpty, getDateTime, isNonEmptyArray, getFirstItem, convertSpecialCharacters, convertNullEmptyString, formatTrim, addLog, addErrorLog, allowLogging, getBrowserData } from "shared-functions";
 import { sessionTokenName, setFetchAuthorization } from "../utilities/applicationFunctions";
-import { setDatabaseAvailable, setUserTokenExpired, setFetchDataUserApplications } from "../app/applicationSettingsSlice";
+import { setDatabaseAvailable, setUserTokenExpired, setFetchDataApplications } from "../app/applicationSettingsSlice";
 import { setComponentToLoad, setIsFormOpen, addErrorMessage, clearMessages } from "../app/activitySlice";
 import type { RootState } from '../app/store';
 
@@ -11,12 +11,14 @@ type InlineErrors = {
   txtApplicationName: string;
 } | null;
 
-const UserApplications = () => {
+const Applications = () => {
 
   const dispatch = useAppDispatch();
 
   const applicationVersion = useAppSelector((state: RootState) => state.applicationSettings.applicationVersion);
   const baseURL = useAppSelector((state: RootState) => state.applicationSettings.baseURL);
+  const baseURLPartners = useAppSelector((state: RootState) => state.applicationSettings.baseURLPartners);
+  const baseURLExtendedRealityScheduling = useAppSelector((state: RootState) => state.applicationSettings.baseURLExtendedRealityScheduling);
   // const baseURLApplied = useAppSelector((state: RootState) => state.applicationSettings.baseURLApplied);
   const computerLog = useAppSelector((state: RootState) => state.applicationSettings.computerLog);
   const userIdentifier = useAppSelector((state: RootState) => state.applicationSettings.userIdentifier);
@@ -29,7 +31,7 @@ const UserApplications = () => {
 
   const isFormOpen = useAppSelector((state: RootState) => state.activity.isFormOpen);
 
-  const userApplications = useAppSelector((state: RootState) => state.activity.userApplications);
+  const applications = useAppSelector((state: RootState) => state.activity.applications);
 
   const [currentUserApplication, setCurrentUserApplication] = useState<any>({}); // TODO type -- 09/18/2025 JH
   const [applicationID, setApplicationID] = useState<string | number>(null);
@@ -227,7 +229,7 @@ const UserApplications = () => {
 
   const processTransaction = (transactionType: string) => {
 
-    let url: string = `${baseURL}userApplications/`;
+    let url: string = `${baseURL}applications/`;
     let response: any = "";
     let data: any = "";
     let operation: string = "";
@@ -242,14 +244,14 @@ const UserApplications = () => {
     if (transactionType === "I") {
 
       // * Add the record. -- 04/16/2021 MF
-      operation = "Added SOS Assistant User Application";
+      operation = "Added Application";
       method = "POST";
       recordObject.active = true;
 
     } else if (transactionType === "U") {
 
       // * Update the record. -- 04/16/2021 MF
-      operation = "Updated SOS Assistant User Application";
+      operation = "Updated Application";
       method = "PUT";
       url = url + primaryKeyID;
       recordObject.applicationID = primaryKeyID;
@@ -258,7 +260,7 @@ const UserApplications = () => {
     } else if (transactionType === "D") {
 
       // * Delete the record. -- 06/02/2021 MF
-      operation = "Deleted SOS Assistant User Application";
+      operation = "Deleted Application";
       method = "PUT";
       url = url + primaryKeyID;
       recordObject.applicationID = primaryKeyID;
@@ -313,7 +315,7 @@ const UserApplications = () => {
 
             addLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, href: window.location.href, applicationVersion, browserData: JSON.stringify(getBrowserData()), transactionData: { dataRecord, previousRecord, loggedInUser, computerLog }, dateEntered: getDateTime() });
 
-            dispatch(setFetchDataUserApplications(true));
+            dispatch(setFetchDataApplications(true));
 
           } else {
 
@@ -354,32 +356,32 @@ const UserApplications = () => {
 
       <DialogBoxConfirmation dialogBoxSize={confirmationDialogBoxSize} dialogBoxTitle={confirmationDialogBoxTitle} dialogBoxContent={confirmationDialogBoxContent} dialogBoxOpen={confirmationDialogBoxOpen} dialogBoxType={confirmationDialogBoxType} setDialogBoxContinue={setConfirmationDialogBoxContinue} />
 
-      <h2>SOS Assistant User Applications</h2>
+      <h2>Applications</h2>
 
-      {isNonEmptyArray(userApplications) && isFormOpen !== true ?
+      {isNonEmptyArray(applications) && isFormOpen !== true ?
 
         <>
 
           <div className="flex-row justify-end right-corner-buttons">
-            <button type="button" className="btn btn-success" onClick={() => { setCurrentUserApplication({}); dispatch(setIsFormOpen(true)); }}>Add SOS Assistant User Application</button>
+            <button type="button" className="btn btn-success" onClick={() => { setCurrentUserApplication({}); dispatch(setIsFormOpen(true)); }}>Add Application</button>
           </div>
 
           <div className="table-container">
             <table>
               <thead>
                 <tr>
-                  <th>SOS Assistant User Application</th>
+                  <th>Application</th>
                 </tr>
               </thead>
               <tbody>
 
-                {userApplications.map((
-                  userApplication: any // TODO type -- 09/18/2025 JH
+                {applications.map((
+                  application: any // TODO type -- 09/18/2025 JH
                 ) => {
 
                   return (
-                    <tr key={userApplication.applicationID} className="clickable-table-row" onClick={() => { window.scrollTo(0, 0); setCurrentUserApplication(userApplication); dispatch(setIsFormOpen(true)); }}>
-                      <td>{userApplication.applicationName}</td>
+                    <tr key={application.applicationID} className="clickable-table-row" onClick={() => { window.scrollTo(0, 0); setCurrentUserApplication(application); dispatch(setIsFormOpen(true)); }}>
+                      <td>{application.applicationName}</td>
                     </tr>
                   );
 
@@ -428,4 +430,4 @@ const UserApplications = () => {
   );
 };
 
-export default UserApplications;
+export default Applications;

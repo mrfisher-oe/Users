@@ -16,7 +16,7 @@ type ActivityTypes = {
   // currentUserRequest: UserRequest | null;
   currentUserRequest: any; // TODO type -- 09/18/2025 JH
 
-  userApplications: Record<string, unknown>[];
+  applications: Record<string, unknown>[];
 
   partners: Record<string, unknown>[];
   currentPartners: Record<string, unknown>[];
@@ -55,7 +55,7 @@ const initialState: ActivityTypes = {
   currentUserRequestID: null,
   currentUserRequest: null,
 
-  userApplications: [],
+  applications: [],
 
   partners: [],
   currentPartners: [],
@@ -131,9 +131,9 @@ const activitySlice = createSlice({
       };
 
     },
-    setUserApplications(state, action: PayloadAction<ActivityTypes["userApplications"]>) {
+    setApplications(state, action: PayloadAction<ActivityTypes["applications"]>) {
 
-      state.userApplications = action.payload;
+      state.applications = action.payload;
 
     },
     setPartnerSites(state, action: PayloadAction<ActivityTypes["partnerSites"]>) {
@@ -328,6 +328,6 @@ const activitySlice = createSlice({
   }
 });
 
-export const { setSessionToken, setLoggedInUser, setComponentToLoad, setIsFormOpen, setAssociatedData, setUserRequests, setCurrentUserRequest, setUserApplications, setPartnerSites, setRequestTypes, addInformationMessage, addSuccessMessage, addWarningMessage, addErrorMessage, clearMessages } = activitySlice.actions;
+export const { setSessionToken, setLoggedInUser, setComponentToLoad, setIsFormOpen, setAssociatedData, setUserRequests, setCurrentUserRequest, setApplications, setPartnerSites, setRequestTypes, addInformationMessage, addSuccessMessage, addWarningMessage, addErrorMessage, clearMessages } = activitySlice.actions;
 
 export default activitySlice.reducer;

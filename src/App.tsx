@@ -6,7 +6,7 @@ import { InteractionStatus } from "@azure/msal-browser";
 import { AlertPopup, Footer, Header } from "shared-components";
 import { isEmpty, getDateTime, isNonEmptyArray, formatTrim, getFirstItem, convertSpecialCharacters, getQueryStringData, addLog, addErrorLog, addComputerLog, parse, getBrowserData, isLocalDevelopment, showDevelopment, showPlayground, showAuthentication, allowLogging, resolveBaseURL, resolveRedirectURL } from "shared-functions";
 import { loginRequest } from "./utilities/authenticationConfig";
-import { setApplicationVersion, setCopyrightYear, setBaseURL, setBaseURLApplied, /* setParametersURL, */ setDemonstrationMode, setEnvironmentMode, setComputerLog, setUserIdentifier, setDatabaseAvailable, setUserTokenExpired, setLocationLogged } from "./app/applicationSettingsSlice";
+import { setApplicationVersion, setCopyrightYear, setBaseURL, setBaseURLPartners, setBaseURLExtendedRealityScheduling, setBaseURLApplied, /* setParametersURL, */ setDemonstrationMode, setEnvironmentMode, setComputerLog, setUserIdentifier, setDatabaseAvailable, setUserTokenExpired, setLocationLogged } from "./app/applicationSettingsSlice";
 import { setComponentToLoad, addSuccessMessage, addErrorMessage, clearMessages } from "./app/activitySlice";
 import { setFetchAuthorization /* , callMsGraph */ } from "./utilities/applicationFunctions";
 import type { AlertItem, AlertType } from "./types/Alert";
@@ -17,7 +17,7 @@ import Messages from "./components/Messages";
 import Navigation from "./components/Navigation";
 import Profile from "./components/Profile";
 import Users from "./components/Users";
-import UserApplications from "./components/UserApplications";
+import Applications from "./components/Applications";
 import UserRequest from "./components/UserRequest";
 import UserRequests from "./components/UserRequests";
 
@@ -34,6 +34,8 @@ const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps)
 
   // const applicationVersion = useAppSelector((state: RootState) => state.applicationSettings.applicationVersion);
   const baseURL = useAppSelector((state: RootState) => state.applicationSettings.baseURL);
+  const baseURLPartners = useAppSelector((state: RootState) => state.applicationSettings.baseURLPartners);
+  const baseURLExtendedRealityScheduling = useAppSelector((state: RootState) => state.applicationSettings.baseURLExtendedRealityScheduling);
   // const baseURLApplied = useAppSelector((state: RootState) => state.applicationSettings.baseURLApplied);
   const computerLog = useAppSelector((state: RootState) => state.applicationSettings.computerLog);
   const userIdentifier = useAppSelector((state: RootState) => state.applicationSettings.userIdentifier);
@@ -92,7 +94,15 @@ const App = ({ applicationVersion = "0.0.0", copyrightYear = "2025" }: AppProps)
 
     let newBaseURL = resolveBaseURL("user", environmentMode, demonstrationMode, false);
 
+    let baseURLPartners = resolveBaseURL("partner", environmentMode, demonstrationMode, false);
+
+    let baseURLExtendedRealityScheduling = resolveBaseURL("extendedRealityScheduling", environmentMode, demonstrationMode, false);
+
     dispatch(setBaseURL(newBaseURL));
+
+    dispatch(setBaseURLPartners(baseURLPartners));
+
+    dispatch(setBaseURLExtendedRealityScheduling(baseURLExtendedRealityScheduling));
 
     dispatch(setBaseURLApplied(true));
 
