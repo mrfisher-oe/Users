@@ -37,7 +37,7 @@ type ApplicationSettingsTypes = {
 
   applicationSettings: Record<string, unknown>;
 
-  fetchDataSOSAssistantUserApplications: boolean;
+  fetchDataUserApplications: boolean;
 };
 
 const initialState: ApplicationSettingsTypes = {
@@ -66,7 +66,7 @@ const initialState: ApplicationSettingsTypes = {
   applicationSettings: {},
 
 
-  fetchDataSOSAssistantUserApplications: false
+  fetchDataUserApplications: false
 
 };
 
@@ -254,14 +254,14 @@ const applicationSettingsSlice = createSlice({
       state.applicationSettings = action.payload;
 
     },
-    setFetchDataSOSAssistantUserApplications(state, action: PayloadAction<ApplicationSettingsTypes["fetchDataSOSAssistantUserApplications"]>) {
+    setFetchDataUserApplications(state, action: PayloadAction<ApplicationSettingsTypes["fetchDataUserApplications"]>) {
 
-      state.fetchDataSOSAssistantUserApplications = action.payload;
+      state.fetchDataUserApplications = action.payload;
 
     }
   }
 });
 
-export const { setApplicationVersion, setCopyrightYear, setBaseURL, setBaseURLApplied, /* setBaseURLPartners, setParametersURL, */ setDemonstrationMode, setEnvironmentMode, setComputerLog, setUserIdentifier, setDatabaseAvailable, setUserTokenExpired, setLocationLogged, setCheckDatabaseAvailable, setApplicationSettings, setFetchDataSOSAssistantUserApplications } = applicationSettingsSlice.actions;
+export const { setApplicationVersion, setCopyrightYear, setBaseURL, setBaseURLApplied, /* setBaseURLPartners, setParametersURL, */ setDemonstrationMode, setEnvironmentMode, setComputerLog, setUserIdentifier, setDatabaseAvailable, setUserTokenExpired, setLocationLogged, setCheckDatabaseAvailable, setApplicationSettings, setFetchDataUserApplications } = applicationSettingsSlice.actions;
 
 export default applicationSettingsSlice.reducer;

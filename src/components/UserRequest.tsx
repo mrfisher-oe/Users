@@ -35,8 +35,8 @@ const UserRequest = () => {
   const loggedInUser = useAppSelector((state: RootState) => state.activity.loggedInUser);
   // const sessionToken = useAppSelector((state: RootState) => state.activity.sessionToken);
 
-  // const sosAssistantUserRequests = useAppSelector((state: RootState) => state.activity.sosAssistantUserRequests);
-  // const sosAssistantUserApplications = useAppSelector((state: RootState) => state.activity.sosAssistantUserApplications);
+  // const userRequests = useAppSelector((state: RootState) => state.activity.userRequests);
+  // const userApplications = useAppSelector((state: RootState) => state.activity.userApplications);
   // const requestTypes = useAppSelector((state: RootState) => state.activity.requestTypes);
   // const partners = useAppSelector((state: RootState) => state.activity.partners);
   // const currentPartners = useAppSelector((state: RootState) => state.activity.currentPartners);
@@ -44,9 +44,9 @@ const UserRequest = () => {
   const currentPartnerSites = useAppSelector((state: RootState) => state.activity.currentPartnerSites);
   const associatedData = useAppSelector((state: RootState) => state.activity.associatedData);
 
-  const sosAssistantUserRequestTypeID = useAppSelector((state: RootState) => state.activity.sosAssistantUserRequestTypeID);
+  const userRequestTypeID = useAppSelector((state: RootState) => state.activity.userRequestTypeID);
 
-  const [sosAssistantUserRequestID, setSOSAssistantUserRequestID] = useState(null);
+  const [userRequestID, setUserRequestID] = useState(null);
   const [ddPartnerSiteID, setDdPartnerSiteID] = useState("");
   const [txtFirstName, setTxtFirstName] = useState("");
   const [txtLastName, setTxtLastName] = useState("");
@@ -68,7 +68,7 @@ const UserRequest = () => {
     txtPreferredDate: ""
   });
 
-  let buttonsDisabled = !isEmpty(sosAssistantUserRequestID);
+  let buttonsDisabled = !isEmpty(userRequestID);
 
   let currentDate = new Date();
 
@@ -348,7 +348,7 @@ const UserRequest = () => {
 
       // if (formPage === 5) {
 
-      // if (isEmpty(sosAssistantUserRequestID)) {
+      // if (isEmpty(userRequestID)) {
 
       // * Add the record. -- 04/16/2021 MF
       processTransaction("I");
@@ -373,7 +373,7 @@ const UserRequest = () => {
 
   const processTransaction = (transactionType: string) => {
 
-    let url: string = `${baseURL}sosAssistantUsers/sosAssistantUserRequests/`;
+    let url: string = `${baseURL}users/userRequests/`;
     let response: any = "";
     let data: any = "";
     let operation: string = "";
@@ -382,7 +382,7 @@ const UserRequest = () => {
     let primaryKeyID: string | number = "";
 
     let recordObject: any = {
-      requestTypeID: convertNullEmptyString(sosAssistantUserRequestTypeID),
+      requestTypeID: convertNullEmptyString(userRequestTypeID),
       firstName: convertNullEmptyString(formatTrim(txtFirstName)),
       lastName: convertNullEmptyString(formatTrim(txtLastName)),
       email: convertNullEmptyString(formatTrim(txtEmail)),
@@ -411,7 +411,7 @@ const UserRequest = () => {
       //   operation = "Updated SOS Assistant User Request";
       //   method = "PUT";
       //   url = url + primaryKeyID;
-      //   recordObject.sosAssistantUserRequestID = primaryKeyID;
+      //   recordObject.userRequestID = primaryKeyID;
       //   recordObject.active = currentRequest.active;
 
       // } else if (transactionType === "D") {
@@ -420,7 +420,7 @@ const UserRequest = () => {
       //   operation = "Deleted SOS Assistant User Request";
       //   method = "PUT";
       //   url = url + primaryKeyID;
-      //   recordObject.sosAssistantUserRequestID = primaryKeyID;
+      //   recordObject.userRequestID = primaryKeyID;
       //   recordObject.active = false;
 
     };
@@ -469,13 +469,13 @@ const UserRequest = () => {
 
             primaryKeyID = data.primaryKeyID;
 
-            setSOSAssistantUserRequestID(primaryKeyID);
+            setUserRequestID(primaryKeyID);
 
             addLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, href: window.location.href, applicationVersion, browserData: JSON.stringify(getBrowserData()), transactionData: { dataRecord, /* previousRecord, */ loggedInUser, computerLog }, dateEntered: getDateTime() });
 
             dispatch(addSuccessMessage(`${operation}: ${data.message}`));
 
-            sendNotificationEmail(sosAssistantUserRequestTypeID, primaryKeyID);
+            sendNotificationEmail(userRequestTypeID, primaryKeyID);
 
             dispatch(setComponentToLoad(""));
 
@@ -524,7 +524,7 @@ const UserRequest = () => {
 
       if (submitType === 5) {
 
-        url += `notifySOSAssistantUser/${primaryKeyID}/`;
+        url += `notifyUser/${primaryKeyID}/`;
 
       };
 

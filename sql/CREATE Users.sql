@@ -28,14 +28,14 @@ GO
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[users]') AND type in (N'U'))
 ALTER TABLE [users] DROP CONSTRAINT IF EXISTS [DF_users_active]
 GO
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[applications]') AND type in (N'U'))
+ALTER TABLE [applications] DROP CONSTRAINT [DF_applications_createDate]
+GO
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[applications]') AND type in (N'U'))
+ALTER TABLE [applications] DROP CONSTRAINT IF EXISTS [DF_applications_active]
+GO
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[userApplications]') AND type in (N'U'))
 ALTER TABLE [userApplications] DROP CONSTRAINT [DF_userApplications_createDate]
-GO
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[userApplications]') AND type in (N'U'))
-ALTER TABLE [userApplications] DROP CONSTRAINT IF EXISTS [DF_userApplications_active]
-GO
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[usersApplications]') AND type in (N'U'))
-ALTER TABLE [usersApplications] DROP CONSTRAINT [DF_usersApplications_createDate]
 GO
 
 DROP TABLE IF EXISTS [applicationSettings]
@@ -54,9 +54,9 @@ DROP TABLE IF EXISTS [userRoles]
 GO
 DROP TABLE IF EXISTS [users]
 GO
-DROP TABLE IF EXISTS [userApplications]
+DROP TABLE IF EXISTS [applications]
 GO
-DROP TABLE IF EXISTS [usersApplications]
+DROP TABLE IF EXISTS [userApplications]
 GO
 
 SET ANSI_NULLS ON
@@ -178,11 +178,8 @@ CREATE TABLE [users](
 	[email] [VARCHAR](255) NULL,
 	[username] [VARCHAR](255) NULL,
 	[password] [VARCHAR](255) NULL,
-
 	[partnerID] [INT] NULL,
 	[partnerSiteID] [INT] NULL,
-	
-	-- [userRoleID] [INT] NULL,
 	[shared] [BIT] NULL,
 	[requestedBy] [VARCHAR](250) NULL,
 	[requestDate] [DATETIME] NULL,
@@ -204,12 +201,12 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [userApplications](
+CREATE TABLE [applications](
 	[applicationID] [INT] IDENTITY(1,1) NOT NULL,
 	[applicationName] [VARCHAR](255) NOT NULL,
 	[active] [BIT] NOT NULL,
 	[createDate] [DATETIME] NOT NULL,
- CONSTRAINT [PK_userApplications] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_applications] PRIMARY KEY CLUSTERED 
 (
 	[applicationID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
@@ -220,7 +217,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [usersApplications](
+CREATE TABLE [userApplications](
 	[userID] [INT] NOT NULL,
 	[applicationID] [INT] NOT NULL,
 	[userRoleID] [INT] NULL,
@@ -246,11 +243,11 @@ ALTER TABLE [users] ADD CONSTRAINT [DF_users_active] DEFAULT ((1)) FOR [active]
 GO
 ALTER TABLE [users] ADD CONSTRAINT [DF_users_createDate] DEFAULT (GETDATE()) FOR [createDate]
 GO
-ALTER TABLE [userApplications] ADD CONSTRAINT [DF_userApplications_active] DEFAULT ((1)) FOR [active]
+ALTER TABLE [applications] ADD CONSTRAINT [DF_applications_active] DEFAULT ((1)) FOR [active]
+GO
+ALTER TABLE [applications] ADD CONSTRAINT [DF_applications_createDate] DEFAULT (GETDATE()) FOR [createDate]
 GO
 ALTER TABLE [userApplications] ADD CONSTRAINT [DF_userApplications_createDate] DEFAULT (GETDATE()) FOR [createDate]
-GO
-ALTER TABLE [usersApplications] ADD CONSTRAINT [DF_usersApplications_createDate] DEFAULT (GETDATE()) FOR [createDate]
 GO
 
 SET IDENTITY_INSERT [applicationSettings] ON 

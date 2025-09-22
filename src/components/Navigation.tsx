@@ -156,7 +156,9 @@ const Navigation = () => {
                 onClick={() => { window.scrollTo(0, 0); dispatch(setComponentToLoad("Profile")); }}
               >
                 {!isEmpty(loggedInUser.firstName) ? <>{loggedInUser.firstName}{!isEmpty(loggedInUser.lastName) ? <> {loggedInUser.lastName},</> : null}</> : null}
-                {!isEmpty(loggedInUser.userRole) ? <> {loggedInUser.userRole}</> : null}
+
+                {/* // TODO: This will need to be rewritten to match the new data structures. -- 09/19/2025 MF */}
+                {/* {!isEmpty(loggedInUser.userRole) ? <> {loggedInUser.userRole}</> : null} */}
               </button>
             </li>
 

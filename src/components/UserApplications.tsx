@@ -3,7 +3,7 @@ import { useAppSelector, useAppDispatch } from "../app/hooks";
 import { DialogBoxConfirmation, FormInput, useDialogBoxConfirmation } from "shared-components";
 import { isEmpty, getDateTime, isNonEmptyArray, getFirstItem, convertSpecialCharacters, convertNullEmptyString, formatTrim, addLog, addErrorLog, allowLogging, getBrowserData } from "shared-functions";
 import { sessionTokenName, setFetchAuthorization } from "../utilities/applicationFunctions";
-import { setDatabaseAvailable, setUserTokenExpired, setFetchDataSOSAssistantUserApplications } from "../app/applicationSettingsSlice";
+import { setDatabaseAvailable, setUserTokenExpired, setFetchDataUserApplications } from "../app/applicationSettingsSlice";
 import { setComponentToLoad, setIsFormOpen, addErrorMessage, clearMessages } from "../app/activitySlice";
 import type { RootState } from '../app/store';
 
@@ -29,7 +29,7 @@ const UserApplications = () => {
 
   const isFormOpen = useAppSelector((state: RootState) => state.activity.isFormOpen);
 
-  const sosAssistantUserApplications = useAppSelector((state: RootState) => state.activity.sosAssistantUserApplications);
+  const userApplications = useAppSelector((state: RootState) => state.activity.userApplications);
 
   const [currentUserApplication, setCurrentUserApplication] = useState<any>({}); // TODO type -- 09/18/2025 JH
   const [applicationID, setApplicationID] = useState<string | number>(null);
@@ -42,22 +42,23 @@ const UserApplications = () => {
   const [processTransactionValue, confirmationDialogBoxOpen, confirmationDialogBoxSize, confirmationDialogBoxTitle, confirmationDialogBoxContent, confirmationDialogBoxType, confirmationDialogBoxContinue, confirmAction, deleteRecord, hardDeleteRecord, closeDeleteDialogBox, setConfirmationDialogBoxContinue, setProcessTransactionValue] = useDialogBoxConfirmation();
 
 
-  useEffect(() => {
+  // TODO: These will need to be rewritten to match the new data structures. -- 09/19/2025 MF
+  // useEffect(() => {
 
-    let currentSessionToken = localStorage.getItem(sessionTokenName);
+  //   let currentSessionToken = localStorage.getItem(sessionTokenName);
 
-    // * When going directly to the page in a new tab or when refreshing, the loggedInUser isn't available yet in Redux so currentSessionToken is checked instead. -- 06/28/2024 MF
-    if (isEmpty(currentSessionToken) || (!isEmpty(loggedInUser) && !loggedInUser.isSystemAdministrator)) {
+  //   // * When going directly to the page in a new tab or when refreshing, the loggedInUser isn't available yet in Redux so currentSessionToken is checked instead. -- 06/28/2024 MF
+  //   if (isEmpty(currentSessionToken) || (!isEmpty(loggedInUser) && !loggedInUser.isSystemAdministrator)) {
 
-      let operation = "Attempted Page Visit";
+  //     let operation = "Attempted Page Visit";
 
-      addLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, href: window.location.href, applicationVersion, browserData: JSON.stringify(getBrowserData()), transactionData: { loggedInUser, computerLog }, dateEntered: getDateTime() });
+  //     addLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, href: window.location.href, applicationVersion, browserData: JSON.stringify(getBrowserData()), transactionData: { loggedInUser, computerLog }, dateEntered: getDateTime() });
 
-      dispatch(setComponentToLoad(""));
+  //     dispatch(setComponentToLoad(""));
 
-    };
+  //   };
 
-  }, [loggedInUser]);
+  // }, [loggedInUser]);
 
 
   useEffect(() => {
@@ -226,7 +227,7 @@ const UserApplications = () => {
 
   const processTransaction = (transactionType: string) => {
 
-    let url: string = `${baseURL}sosAssistantUserApplications/`;
+    let url: string = `${baseURL}userApplications/`;
     let response: any = "";
     let data: any = "";
     let operation: string = "";
@@ -312,7 +313,7 @@ const UserApplications = () => {
 
             addLog(baseURL, setFetchAuthorization(null, environmentMode, demonstrationMode), databaseAvailable, allowLogging(), { operation, userIdentifier, href: window.location.href, applicationVersion, browserData: JSON.stringify(getBrowserData()), transactionData: { dataRecord, previousRecord, loggedInUser, computerLog }, dateEntered: getDateTime() });
 
-            dispatch(setFetchDataSOSAssistantUserApplications(true));
+            dispatch(setFetchDataUserApplications(true));
 
           } else {
 
@@ -355,7 +356,7 @@ const UserApplications = () => {
 
       <h2>SOS Assistant User Applications</h2>
 
-      {isNonEmptyArray(sosAssistantUserApplications) && isFormOpen !== true ?
+      {isNonEmptyArray(userApplications) && isFormOpen !== true ?
 
         <>
 
@@ -372,13 +373,13 @@ const UserApplications = () => {
               </thead>
               <tbody>
 
-                {sosAssistantUserApplications.map((
-                  sosAssistantUserApplication: any // TODO type -- 09/18/2025 JH
+                {userApplications.map((
+                  userApplication: any // TODO type -- 09/18/2025 JH
                 ) => {
 
                   return (
-                    <tr key={sosAssistantUserApplication.applicationID} className="clickable-table-row" onClick={() => { window.scrollTo(0, 0); setCurrentUserApplication(sosAssistantUserApplication); dispatch(setIsFormOpen(true)); }}>
-                      <td>{sosAssistantUserApplication.applicationName}</td>
+                    <tr key={userApplication.applicationID} className="clickable-table-row" onClick={() => { window.scrollTo(0, 0); setCurrentUserApplication(userApplication); dispatch(setIsFormOpen(true)); }}>
+                      <td>{userApplication.applicationName}</td>
                     </tr>
                   );
 

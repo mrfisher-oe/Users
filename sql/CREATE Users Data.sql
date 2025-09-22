@@ -1,21 +1,31 @@
 -- USE [Users]
 -- GO
 
-TRUNCATE TABLE userApplications
+TRUNCATE TABLE applications
 TRUNCATE TABLE userRoles
 GO
 
-DBCC CHECKIDENT('userApplications', RESEED, 1)
+DBCC CHECKIDENT('applications', RESEED, 1)
 DBCC CHECKIDENT('userRoles', RESEED, 1)
 GO
 
-SET IDENTITY_INSERT [userApplications] ON 
+SET IDENTITY_INSERT [applications] ON 
 GO
-INSERT [userApplications] ([applicationID], [applicationName], [active], [createDate]) VALUES (1, N'SOS Assistant', 1, CAST(N'2025-01-28T22:55:51.467' AS DateTime))
+INSERT [applications] ([applicationID], [applicationName], [active], [createDate]) VALUES (1, N'Electronic Health Record Login', 1, CAST(N'2025-09-19T21:41:26.073' AS DateTime))
 GO
-INSERT [userApplications] ([applicationID], [applicationName], [active], [createDate]) VALUES (2, N'Electronic Health Record', 1, CAST(N'2025-01-28T22:56:11.600' AS DateTime))
+INSERT [applications] ([applicationID], [applicationName], [active], [createDate]) VALUES (2, N'Extended Reality Scheduling System', 1, CAST(N'2025-09-19T21:41:26.073' AS DateTime))
 GO
-SET IDENTITY_INSERT [userApplications] OFF
+INSERT [applications] ([applicationID], [applicationName], [active], [createDate]) VALUES (3, N'Faculty Training and Development Curriculum', 1, CAST(N'2025-09-19T21:41:26.073' AS DateTime))
+GO
+INSERT [applications] ([applicationID], [applicationName], [active], [createDate]) VALUES (4, N'Learning Object Repository', 1, CAST(N'2025-09-19T21:41:26.073' AS DateTime))
+GO
+INSERT [applications] ([applicationID], [applicationName], [active], [createDate]) VALUES (5, N'Partners', 1, CAST(N'2025-09-19T21:41:26.073' AS DateTime))
+GO
+INSERT [applications] ([applicationID], [applicationName], [active], [createDate]) VALUES (6, N'SOS Assistant', 1, CAST(N'2025-09-19T21:41:26.073' AS DateTime))
+GO
+INSERT [applications] ([applicationID], [applicationName], [active], [createDate]) VALUES (7, N'Users', 1, CAST(N'2025-09-19T21:41:26.073' AS DateTime))
+GO
+SET IDENTITY_INSERT [applications] OFF
 GO
 SET IDENTITY_INSERT [userRoles] ON 
 GO
