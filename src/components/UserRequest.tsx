@@ -24,6 +24,8 @@ const UserRequest = () => {
 
   const applicationVersion = useAppSelector((state: RootState) => state.applicationSettings.applicationVersion);
   const baseURL = useAppSelector((state: RootState) => state.applicationSettings.baseURL);
+  const baseURLPartners = useAppSelector((state: RootState) => state.applicationSettings.baseURLPartners);
+  const baseURLExtendedRealityScheduling = useAppSelector((state: RootState) => state.applicationSettings.baseURLExtendedRealityScheduling);
   // const baseURLApplied = useAppSelector((state: RootState) => state.applicationSettings.baseURLApplied);
   const computerLog = useAppSelector((state: RootState) => state.applicationSettings.computerLog);
   const userIdentifier = useAppSelector((state: RootState) => state.applicationSettings.userIdentifier);
@@ -36,7 +38,7 @@ const UserRequest = () => {
   // const sessionToken = useAppSelector((state: RootState) => state.activity.sessionToken);
 
   // const userRequests = useAppSelector((state: RootState) => state.activity.userRequests);
-  // const userApplications = useAppSelector((state: RootState) => state.activity.userApplications);
+  // const applications = useAppSelector((state: RootState) => state.activity.applications);
   // const requestTypes = useAppSelector((state: RootState) => state.activity.requestTypes);
   // const partners = useAppSelector((state: RootState) => state.activity.partners);
   // const currentPartners = useAppSelector((state: RootState) => state.activity.currentPartners);
@@ -373,7 +375,7 @@ const UserRequest = () => {
 
   const processTransaction = (transactionType: string) => {
 
-    let url: string = `${baseURL}users/userRequests/`;
+    let url: string = `${baseURL}userRequests/`;
     let response: any = "";
     let data: any = "";
     let operation: string = "";
@@ -401,14 +403,14 @@ const UserRequest = () => {
     if (transactionType === "I") {
 
       // * Add the record. -- 04/16/2021 MF
-      operation = "Added SOS Assistant User Request";
+      operation = "Added User Request";
       method = "POST";
       recordObject.active = true;
 
       // } else if (transactionType === "U") {
 
       //   // * Update the record. -- 04/16/2021 MF
-      //   operation = "Updated SOS Assistant User Request";
+      //   operation = "Updated User Request";
       //   method = "PUT";
       //   url = url + primaryKeyID;
       //   recordObject.userRequestID = primaryKeyID;
@@ -417,7 +419,7 @@ const UserRequest = () => {
       // } else if (transactionType === "D") {
 
       //   // * Delete the record. -- 06/02/2021 MF
-      //   operation = "Deleted SOS Assistant User Request";
+      //   operation = "Deleted User Request";
       //   method = "PUT";
       //   url = url + primaryKeyID;
       //   recordObject.userRequestID = primaryKeyID;

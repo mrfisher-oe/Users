@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "../app/hooks";
 import { isEmpty, getDateTime, convertSpecialCharacters, addLog, addErrorLog, allowLogging } from "shared-functions";
 import { setFetchAuthorization } from "../utilities/applicationFunctions";
-import { setDatabaseAvailable, setUserTokenExpired, setFetchDataUserApplications } from "../app/applicationSettingsSlice";
-import { setAssociatedData, setUserApplications, setPartnerSites, setRequestTypes, addErrorMessage, clearMessages } from "../app/activitySlice";
+import { setDatabaseAvailable, setUserTokenExpired, setFetchDataApplications } from "../app/applicationSettingsSlice";
+import { setAssociatedData, setApplications, setPartnerSites, setRequestTypes, addErrorMessage, clearMessages } from "../app/activitySlice";
 import type { RootState } from '../app/store';
 
 const useFetchData = () => {
@@ -12,6 +12,8 @@ const useFetchData = () => {
 
   const applicationVersion = useAppSelector((state: RootState) => state.applicationSettings.applicationVersion);
   const baseURL = useAppSelector((state: RootState) => state.applicationSettings.baseURL);
+  const baseURLPartners = useAppSelector((state: RootState) => state.applicationSettings.baseURLPartners);
+  const baseURLExtendedRealityScheduling = useAppSelector((state: RootState) => state.applicationSettings.baseURLExtendedRealityScheduling);
   const baseURLApplied = useAppSelector((state: RootState) => state.applicationSettings.baseURLApplied);
   const computerLog = useAppSelector((state: RootState) => state.applicationSettings.computerLog);
   const userIdentifier = useAppSelector((state: RootState) => state.applicationSettings.userIdentifier);
@@ -23,7 +25,7 @@ const useFetchData = () => {
   const loggedInUser = useAppSelector((state: RootState) => state.activity.loggedInUser);
   const sessionToken = useAppSelector((state: RootState) => state.activity.sessionToken);
 
-  const fetchDataUserApplications = useAppSelector((state: RootState) => state.applicationSettings.fetchDataUserApplications);
+  const fetchDataApplications = useAppSelector((state: RootState) => state.applicationSettings.fetchDataApplications);
 
 
   useEffect(() => {
@@ -42,9 +44,9 @@ const useFetchData = () => {
     // if (!isEmpty(loggedInUser) && loggedInUser.isAdministrator) {
 
     // * Causes the application to possibly re-render many times with this code: dispatch(clearMessages());. -- 02/07/2025 MF
-    // dispatch(setFetchDataUserApplications(true));
+    // dispatch(setFetchDataApplications(true));
 
-    loadUserApplications();
+    loadApplications();
 
     loadRequestTypes();
 
@@ -55,32 +57,32 @@ const useFetchData = () => {
 
   useEffect(() => {
 
-    if (fetchDataUserApplications === true) {
+    if (fetchDataApplications === true) {
 
       dispatch(clearMessages());
 
-      loadUserApplications();
+      loadApplications();
 
-      dispatch(setFetchDataUserApplications(false));
+      dispatch(setFetchDataApplications(false));
 
     };
 
-  }, [fetchDataUserApplications]);
+  }, [fetchDataApplications]);
 
 
-  const loadUserApplications = () => {
+  const loadApplications = () => {
 
     if (!isEmpty(sessionToken) && !isEmpty(baseURL)) {
 
       // * Causes the form to re-render after submission and the messages disappear before they can be viewed. -- 02/07/2025 MF
       // dispatch(clearMessages());
 
-      dispatch(setUserApplications([]));
+      dispatch(setApplications([]));
 
-      let url: string = `${baseURL}userApplications/`;
+      let url: string = `${baseURL}applications/`;
       let response: any = "";
       let data: any = "";
-      let operation: string = "Get SOS Assistant User Applications";
+      let operation: string = "Get User Applications";
 
       fetch(url, {
         method: "GET",
@@ -117,7 +119,7 @@ const useFetchData = () => {
 
             if (data.transactionSuccess && !isEmpty(data.records)) {
 
-              dispatch(setUserApplications(data.records));
+              dispatch(setApplications(data.records));
 
               dispatch(setDatabaseAvailable(true));
 
@@ -168,7 +170,7 @@ const useFetchData = () => {
 
       dispatch(setPartnerSites([]));
 
-      let url: string = `${baseURL}partnerSites/`;
+      let url: string = `${baseURLExtendedRealityScheduling}partnerSites/`;
       let response: any = "";
       let data: any = "";
       let operation: string = "Get Partner Sites";
@@ -259,7 +261,7 @@ const useFetchData = () => {
 
       dispatch(setAssociatedData(null));
 
-      let url: string = `${baseURL}associatedData/`;
+      let url: string = `${baseURLExtendedRealityScheduling}associatedData/`;
       let response: any = "";
       let data: any = "";
       let operation: string = "Get Associated Data";
@@ -350,7 +352,7 @@ const useFetchData = () => {
 
       dispatch(setRequestTypes([]));
 
-      let url: string = `${baseURL}requestTypes/`;
+      let url: string = `${baseURLExtendedRealityScheduling}requestTypes/`;
       let response: any = "";
       let data: any = "";
       let operation: string = "Get Request Types";

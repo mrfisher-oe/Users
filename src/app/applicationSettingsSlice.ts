@@ -8,6 +8,8 @@ type ApplicationSettingsTypes = {
   // databaseNameProduction: string;
   // databaseNameDevelopment: string;
   baseURL: string;
+  baseURLPartners: string;
+  baseURLExtendedRealityScheduling: string;
   baseURLApplied: boolean;
   browserData: {
     appCodeName: string;
@@ -37,7 +39,7 @@ type ApplicationSettingsTypes = {
 
   applicationSettings: Record<string, unknown>;
 
-  fetchDataUserApplications: boolean;
+  fetchDataApplications: boolean;
 };
 
 const initialState: ApplicationSettingsTypes = {
@@ -47,6 +49,8 @@ const initialState: ApplicationSettingsTypes = {
   // databaseNameProduction: "Users",
   // databaseNameDevelopment: "UsersDevelopment",
   baseURL: "",
+  baseURLPartners: "",
+  baseURLExtendedRealityScheduling: "",
   baseURLApplied: false,
   browserData: null,
   computerLog: {},
@@ -66,7 +70,7 @@ const initialState: ApplicationSettingsTypes = {
   applicationSettings: {},
 
 
-  fetchDataUserApplications: false
+  fetchDataApplications: false
 
 };
 
@@ -87,6 +91,16 @@ const applicationSettingsSlice = createSlice({
     setBaseURL(state, action: PayloadAction<ApplicationSettingsTypes["baseURL"]>) {
 
       state.baseURL = action.payload;
+
+    },
+    setBaseURLPartners(state, action: PayloadAction<ApplicationSettingsTypes["baseURL"]>) {
+
+      state.baseURLPartners = action.payload;
+
+    },
+    setBaseURLExtendedRealityScheduling(state, action: PayloadAction<ApplicationSettingsTypes["baseURL"]>) {
+
+      state.baseURLExtendedRealityScheduling = action.payload;
 
     },
     setBaseURLApplied(state, action: PayloadAction<ApplicationSettingsTypes["baseURLApplied"]>) {
@@ -254,14 +268,14 @@ const applicationSettingsSlice = createSlice({
       state.applicationSettings = action.payload;
 
     },
-    setFetchDataUserApplications(state, action: PayloadAction<ApplicationSettingsTypes["fetchDataUserApplications"]>) {
+    setFetchDataApplications(state, action: PayloadAction<ApplicationSettingsTypes["fetchDataApplications"]>) {
 
-      state.fetchDataUserApplications = action.payload;
+      state.fetchDataApplications = action.payload;
 
     }
   }
 });
 
-export const { setApplicationVersion, setCopyrightYear, setBaseURL, setBaseURLApplied, /* setBaseURLPartners, setParametersURL, */ setDemonstrationMode, setEnvironmentMode, setComputerLog, setUserIdentifier, setDatabaseAvailable, setUserTokenExpired, setLocationLogged, setCheckDatabaseAvailable, setApplicationSettings, setFetchDataUserApplications } = applicationSettingsSlice.actions;
+export const { setApplicationVersion, setCopyrightYear, setBaseURL, setBaseURLPartners, setBaseURLExtendedRealityScheduling, setBaseURLApplied, /* setBaseURLPartners, setParametersURL, */ setDemonstrationMode, setEnvironmentMode, setComputerLog, setUserIdentifier, setDatabaseAvailable, setUserTokenExpired, setLocationLogged, setCheckDatabaseAvailable, setApplicationSettings, setFetchDataApplications } = applicationSettingsSlice.actions;
 
 export default applicationSettingsSlice.reducer;
