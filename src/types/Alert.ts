@@ -4,4 +4,4 @@ export type AlertItem = {
   message: string;
 }
 
-export type AlertType = "error" | "success" | "info" | "warning" | "";;
+export type AlertType = "error" | "success" | "info" | "warning" | "";
