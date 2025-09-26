@@ -488,7 +488,7 @@ const UserRequests = ({ processTransactionUserRequest }) => {
             <div className="flex-row justify-center">
 
               <button type="button" className="btn btn-danger" onClick={() => { deleteRecord(); }}>Delete</button>
-              <button type="button" className="btn btn-light-gray" onClick={() => { window.scrollTo(0, 0); dispatch(setCurrentUserRequest({})); }}>Close</button>
+              <button type="button" className="btn btn-light-gray" onClick={() => { window.scrollTo(0, 0); dispatch(setCurrentUserRequest({})); }}>Cancel</button>
 
             </div>
 
