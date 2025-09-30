@@ -538,7 +538,7 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
       setTxtPassword("");
       setTxtRequestedBy(newCurrentUser.requestedBy);
       setTxtRequestDate(formatDate(newCurrentUser.requestDate));
-      setTxtNotes(newCurrentUser.notes);
+      setTxtNotes(convertNullEmptyString(newCurrentUser.notes));
       setDdPartnerSiteID(newCurrentUser.partnerSiteID);
       loadUserApplications(newCurrentUser.userID);
 
