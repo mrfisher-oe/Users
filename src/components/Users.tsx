@@ -1192,15 +1192,23 @@ const Users = ({ processTransactionUserRequest }: UserProps) => {
 
               <button type="button" className="btn btn-dark-gray" onClick={() => { loadRecord(currentUser); dispatch(clearMessages()); setInlineErrors({ txtUsername: "", txtFirstName: "", txtLastName: "", txtEmail: "", ddPartnerSiteID: "" }); }}>Reset</button>
 
-              {currentUser.active ?
+              {!isEmpty(currentUser.userID) ?
 
-                <button type="button" className="btn btn-danger" onClick={deleteRecord}>Delete</button>
+                <>
 
-                :
+                  {currentUser.active ?
 
-                <button type="button" className="btn btn-success" onClick={enableRecord}>Enable</button>
+                    <button type="button" className="btn btn-danger" onClick={deleteRecord}>Delete</button>
 
-              }
+                    :
+
+                    <button type="button" className="btn btn-success" onClick={enableRecord}>Enable</button>
+
+                  }
+
+                </>
+
+                : null}
 
               <button type="button" className="btn btn-outline" onClick={() => { setCurrentUser(null); dispatch(setIsFormOpen(false)); dispatch(clearMessages()); setInlineErrors({ txtUsername: "", txtFirstName: "", txtLastName: "", txtEmail: "", ddPartnerSiteID: "" }); }}>Cancel</button>
 
