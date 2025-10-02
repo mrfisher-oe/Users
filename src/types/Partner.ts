@@ -31,7 +31,6 @@ export type PartnerSite = {
 
   partnerSiteID: number | null;
   partnerSiteName: string | null;
-  partnerSiteNameAbbreviation?: string | null;
   partnerSiteAbbreviation?: string | null;
   partnerSitesActive: boolean | null;
   // partnerSitesCreateDate: Date | null;

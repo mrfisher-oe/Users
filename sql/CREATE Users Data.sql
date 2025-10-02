@@ -27,6 +27,7 @@ INSERT [applications] ([applicationID], [applicationName], [active], [createDate
 GO
 SET IDENTITY_INSERT [applications] OFF
 GO
+
 SET IDENTITY_INSERT [userRoles] ON 
 GO
 INSERT [userRoles] ([userRoleID], [userRole], [active], [createDate]) VALUES (1, N'Viewer', 1, CAST(N'2023-08-03T20:13:35.080' AS DateTime))
